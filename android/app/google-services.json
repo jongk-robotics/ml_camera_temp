@@ -1,0 +1,127 @@
+{
+  "project_info": {
+    "project_number": "1094858394272",
+    "firebase_url": "https://test1-d2b46.firebaseio.com",
+    "project_id": "test1-d2b46",
+    "storage_bucket": "test1-d2b46.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1094858394272:android:d313a8c76af3e2f5c097c5",
+        "android_client_info": {
+          "package_name": "codingwithmitch.com.tabiancustomcamera"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1094858394272-sel8l94u7j4t2rstgf04jqa6dc2ape7v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5Rl02C-fL90pmrCadJPVHYIOnrp92830"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1094858394272-sel8l94u7j4t2rstgf04jqa6dc2ape7v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1094858394272:android:86aa3cdb22ed979dc097c5",
+        "android_client_info": {
+          "package_name": "com.example.cs496_w4"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1094858394272-sel8l94u7j4t2rstgf04jqa6dc2ape7v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5Rl02C-fL90pmrCadJPVHYIOnrp92830"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1094858394272-sel8l94u7j4t2rstgf04jqa6dc2ape7v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1094858394272:android:8baa4f53de8b2fe2c097c5",
+        "android_client_info": {
+          "package_name": "com.example.test1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1094858394272-sel8l94u7j4t2rstgf04jqa6dc2ape7v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5Rl02C-fL90pmrCadJPVHYIOnrp92830"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1094858394272-sel8l94u7j4t2rstgf04jqa6dc2ape7v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1094858394272:android:504331a5ff7c795dc097c5",
+        "android_client_info": {
+          "package_name": "org.tensorflow.lite.examples.facerecognition"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1094858394272-sel8l94u7j4t2rstgf04jqa6dc2ape7v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5Rl02C-fL90pmrCadJPVHYIOnrp92830"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1094858394272-sel8l94u7j4t2rstgf04jqa6dc2ape7v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
