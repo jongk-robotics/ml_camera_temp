@@ -85,6 +85,7 @@ public abstract class CameraActivity extends AppCompatActivity
   private Runnable postInferenceCallback;
   private Runnable imageConverter;
   private Bitmap rgbFrameBitmap = null;
+  private final String TAG = "CameraActiviy";
 
   private LinearLayout bottomSheetLayout;
   private LinearLayout gestureLayout;
@@ -356,7 +357,6 @@ public abstract class CameraActivity extends AppCompatActivity
                   rgbBytes);
             }
           };
-//
     postInferenceCallback =
           new Runnable() {
             @Override

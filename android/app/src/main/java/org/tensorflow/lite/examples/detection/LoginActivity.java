@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -16,12 +17,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
     // login userID 전역변수로 설정
     public static String user_ID;
     public static String user_profile="";
+
+    private static String TAG = "LoginActivity";
 
     String email="", pw="";
     EditText emailET,pwET;
@@ -86,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
 //                            user_ID=fAuth.getCurrentUser().getUid();
 //                            Log.d("Login Success: ", user_ID);
                             Toast.makeText(LoginActivity.this,"Logged in Successfully.", Toast.LENGTH_SHORT).show();
+                            loadUserData(fAuth.getCurrentUser().getEmail());
                             startActivity(new Intent(getApplicationContext(),DetectorActivity.class));
                         } else{
                             Toast.makeText(LoginActivity.this, "Error !"+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -102,6 +109,37 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent signupIntent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(signupIntent);
+            }
+        });
+    }
+
+    private void loadUserData(String userEmail)
+    {
+        CommonConstants CC = new CommonConstants();
+        FirebaseFirestore Ref = FirebaseFirestore.getInstance();
+        DocumentReference docRef = Ref.collection(CC.USERS).document(userEmail).collection(CC.RECOG_COL).document(CC.RECOG_DOC);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        String recogintion = (String)document.get(CC.RECOG_FIELD);
+                        if(recogintion != null && !recogintion.isEmpty())
+                        {
+                            PreferenceManager.setString(getApplicationContext(), CC.RECOG_SHARED, recogintion);
+                        }
+                        else{
+                            PreferenceManager.setString(getApplicationContext(), CC.RECOG_SHARED, "");
+                        }
+
+
+                    } else {
+                        Log.d(TAG, "No such document");
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
             }
         });
     }

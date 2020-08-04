@@ -91,9 +91,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   int mDpWidth;
   int mDpHeight;
 
-  //얼굴인식 할지 안할지 결정
-  private boolean isDetectionActive = false;
-
   //activity
   private Activity mActivity = this;
 
@@ -127,8 +124,10 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   private long lastProcessingTimeMs;
   private Bitmap rgbFrameBitmap = null;
+  private Bitmap capturedBitmap = null;
   private Bitmap croppedBitmap = null;
   private Bitmap cropCopyBitmap = null;
+
 
   private boolean computingDetection = false;
   private boolean addPending = false;
@@ -188,7 +187,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     fabSearch.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        isDetectionActive = !isDetectionActive;
+
       }
     });
 
@@ -219,6 +218,11 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     });
   }
 
+  @Override
+  public synchronized void onResume() {
+    super.onResume();
+    computingDetection = false;
+  }
 
   private void onCheckClick() {
     checknames = !checknames;
@@ -274,6 +278,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     previewHeight = size.getHeight();
     //아마도 얼굴이 조금 돌아가 있을 때(옆 모습이 찍힐 때) 그 얼굴을 앞을 보는 얼굴로 정규화 할 때 필요할 것 같다.
     sensorOrientation = rotation - getScreenOrientation();
+    Log.d(TAG, "sensor: " + sensorOrientation);
 
     rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
 
@@ -337,7 +342,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   @Override
   protected void processImage() {
-
+    Log.d(TAG, "computingDetection: " + computingDetection);
 
     //타임스탬프로 초? 시간을 측정하는 것 같은데 우리한테는 필요 없을 듯?
     ++timestamp;
@@ -351,114 +356,120 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     }
     computingDetection = true;
 
-    rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
-
     readyForNextImage();
 
     if(isCaptureImage)
     {
       isCaptureImage = false;
+      addPending = true;
       ImageView iv = findViewById(R.id.stillshot_imageview);
 
-      Log.d("MAIN", "iscapturing: ");
+      rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
 
-      ProgressDialog asyncDialog = new ProgressDialog(this);
-
-      class SaveImageInBack extends AsyncTask<Void, Void, Uri>
-      {
-        @Override
-        protected void onPreExecute() {
-          asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-          asyncDialog.setMessage("이미지를 처리중입니다...");
-          asyncDialog.show();
-        }
-
-        @Override
-        protected void onPostExecute(Uri uri) {
-          asyncDialog.dismiss();
-
-          Intent intent = new Intent(mActivity, CapturedImageAcvtivity.class);
-          intent.putExtra("imageUri", uri);
-          intent.putExtra("nameList", nameList);
-          startActivity(intent);
-        }
-
-        @Override
-        protected Uri doInBackground(Void... voids) {
-
-          Matrix rotateMatrix = new Matrix();
-          if(getUseFacing() == CameraCharacteristics.LENS_FACING_FRONT)
-          {
-            rotateMatrix.postRotate(-90); //-360~360
-          }
-          else{
-            rotateMatrix.postRotate(90); //-360~360
-          }
-
-
-          Bitmap rotated = Bitmap.createBitmap(rgbFrameBitmap, 0, 0,
-                  rgbFrameBitmap.getWidth(), rgbFrameBitmap.getHeight(), rotateMatrix, true);
-
-          Date day = new Date();
-          SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.KOREA);
-          String fileName = String.valueOf(sdf.format(day));
-
-          File file = new File(getFilesDir(), fileName);
-
-          try {
-            FileOutputStream filestream = new FileOutputStream(file);
-            rotated.compress(Bitmap.CompressFormat.PNG, 0, filestream);
-
-          } catch (FileNotFoundException e) {
-            e.printStackTrace();
-          }
-
-          return Uri.fromFile(file);
-        }
+      final Canvas canvas = new Canvas(croppedBitmap);
+      canvas.drawBitmap(rgbFrameBitmap, frameToCropTransform, null);
+      // For examining the actual TF input.
+      if (SAVE_PREVIEW_BITMAP) {
+        ImageUtils.saveBitmap(croppedBitmap);
       }
 
-      SaveImageInBack task = new SaveImageInBack();
+      InputImage image = InputImage.fromBitmap(croppedBitmap, 0);
+      boolean isFacingFront = (getUseFacing() == CameraCharacteristics.LENS_FACING_FRONT);
+      SaveImageInBack task = new SaveImageInBack(rgbFrameBitmap, new ArrayList<>(), previewWidth, previewHeight, sensorOrientation, isFacingFront);
       task.execute();
-    }
 
-    if(!isDetectionActive){
-      tracker.trackResults(new LinkedList<>(), currTimestamp);
+//      faceDetector
+//              .process(image)
+//              .addOnSuccessListener(new OnSuccessListener<List<Face>>() {
+//                @Override
+//                public void onSuccess(List<Face> faces) {
+//                  if (faces.size() == 0) {
+//                    updateResults(currTimestamp, new LinkedList<>());
+//                    return;
+//                  }
+//                  runInBackground(
+//                          new Runnable() {
+//                            @Override
+//                            public void run() {
+//                              onFacesDetected(currTimestamp, faces, addPending,checknames);
+//                              addPending = false;
+//                              checknames =false;
+//                            }
+//                          });
+//                }
+//
+//              });
+//
+//      Log.d("MAIN", "iscapturing: ");
+//    }
+//    else{
+//      computingDetection = false;
+    }
       computingDetection = false;
-      return;
-    }
-
-    Log.d(TAG, "detectionactive");
-
-    final Canvas canvas = new Canvas(croppedBitmap);
-    canvas.drawBitmap(rgbFrameBitmap, frameToCropTransform, null);
-    // For examining the actual TF input.
-    if (SAVE_PREVIEW_BITMAP) {
-      ImageUtils.saveBitmap(croppedBitmap);
-    }
-
-    InputImage image = InputImage.fromBitmap(croppedBitmap, 0);
-    faceDetector
-            .process(image)
-            .addOnSuccessListener(new OnSuccessListener<List<Face>>() {
-              @Override
-              public void onSuccess(List<Face> faces) {
-                if (faces.size() == 0) {
-                  updateResults(currTimestamp, new LinkedList<>());
-                  return;
-                }
-                runInBackground(
-                        new Runnable() {
-                          @Override
-                          public void run() {
-                            onFacesDetected(currTimestamp, faces, addPending,checknames);
-                            addPending = false;
-                            checknames =false;
-                          }
-                        });
-              }
-
-            });
   }
+
+  class SaveImageInBack extends AsyncTask<Void, Void, Uri>
+  {
+    private ProgressDialog asyncDialog = new ProgressDialog(mActivity);
+    private Bitmap bitmap;
+    private ArrayList<String> nameList;
+    private int previewWidth;
+    private int previewHeight;
+    private int sensorOrientation;
+    private boolean isFacingFront;
+
+    SaveImageInBack(Bitmap bitmap, ArrayList<String> nameList, int previewWidth, int previewHeight, int sensorOrientation, boolean isFacingFront){
+      this.bitmap = bitmap;
+      this.nameList = nameList;
+      this.previewWidth = previewWidth;
+      this.previewHeight = previewHeight;
+      this.sensorOrientation = sensorOrientation;
+      this.isFacingFront = isFacingFront;
+    }
+
+    @Override
+    protected void onPreExecute() {
+      asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+      asyncDialog.setMessage("이미지를 처리중입니다...");
+      asyncDialog.show();
+    }
+
+    @Override
+    protected void onPostExecute(Uri uri) {
+      asyncDialog.dismiss();
+
+      Intent intent = new Intent(mActivity, CapturedImageAcvtivity.class);
+      intent.putExtra("imageUri", uri);
+      intent.putExtra("previewWidth", previewWidth);
+      intent.putExtra("previewHeight", previewHeight);
+      intent.putExtra("sensorOrientation", sensorOrientation);
+      intent.putExtra("isFacingFront", isFacingFront);
+
+      startActivity(intent);
+    }
+
+    @Override
+    protected Uri doInBackground(Void... voids) {
+
+      Date day = new Date();
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.KOREA);
+      String fileName = String.valueOf(sdf.format(day));
+
+      File file = new File(getFilesDir(), fileName);
+
+      try {
+        FileOutputStream filestream = new FileOutputStream(file);
+        rgbFrameBitmap.compress(Bitmap.CompressFormat.PNG, 0, filestream);
+
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+
+      return Uri.fromFile(file);
+    }
+  }
+
+
 
   @Override
   protected int getLayoutId() {
@@ -550,6 +561,13 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
           detector.register(name, rec);
           //knownFaces.put(name, rec);
           dlg.dismiss();
+
+          ArrayList<String> arr = new ArrayList<>();
+          arr.add(name);
+
+        boolean isFacingFront = (getUseFacing() == CameraCharacteristics.LENS_FACING_FRONT);
+        SaveImageInBack task = new SaveImageInBack(rgbFrameBitmap, arr, previewWidth, previewHeight, sensorOrientation, isFacingFront);
+        task.execute();
       }
     });
     builder.setView(dialogLayout);
@@ -561,20 +579,26 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   //결과를 업데이트 해주는 부분 !! !!
   private void updateResults(long currTimestamp, final List<SimilarityClassifier.Recognition> mappedRecognitions) {
 
-    tracker.trackResults(mappedRecognitions, currTimestamp);
-    trackingOverlay.postInvalidate();
-    computingDetection = false;
+    //tracker.trackResults(mappedRecognitions, currTimestamp);
+    //trackingOverlay.postInvalidate();
+
     //adding = false;
 
 
     if (mappedRecognitions.size() > 0) {
 
        //왜 첫번째 꺼를 할까??????
+
        SimilarityClassifier.Recognition rec = mappedRecognitions.get(0);
        if (rec.getExtra() != null) {
          showAddFaceDialog(rec);
        }
-
+    }
+    else{
+      boolean isFacingFront = (getUseFacing() == CameraCharacteristics.LENS_FACING_FRONT);
+      SaveImageInBack task = new SaveImageInBack(rgbFrameBitmap, new ArrayList<String>(), previewWidth, previewHeight, sensorOrientation, isFacingFront);
+      computingDetection = false;
+      task.execute();
     }
 
     runOnUiThread(
@@ -586,7 +610,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                 showInference(lastProcessingTimeMs + "ms");
               }
             });
-
+    computingDetection = false;
   }
 
 
@@ -745,10 +769,10 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     //    if (saved) {
 //      lastSaved = System.currentTimeMillis();
 //    }
-    if(check){
-      Toast.makeText(getApplicationContext(), labels.toString(), Toast.LENGTH_LONG).show();
-
-    }
+//    if(check){
+//      Toast.makeText(getApplicationContext(), labels.toString(), Toast.LENGTH_LONG).show();
+//
+//    }
     updateResults(currTimestamp, mappedRecognitions);
 
 

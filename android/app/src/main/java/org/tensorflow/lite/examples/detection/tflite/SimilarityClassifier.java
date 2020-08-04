@@ -17,6 +17,11 @@ package org.tensorflow.lite.examples.detection.tflite;
 
 import android.graphics.Bitmap;
 import android.graphics.RectF;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.HashMap;
 import java.util.List;
 
 /** Generic interface for interacting with different recognition engines. */
@@ -25,6 +30,10 @@ public interface SimilarityClassifier {
   void register(String name, Recognition recognition);
 
   List<Recognition> recognizeImage(Bitmap bitmap, boolean getExtra);
+
+  int getRegistedNum();
+
+  void setRegsisted(HashMap<String, Recognition> registered);
 
   void enableStatLogging(final boolean debug);
 

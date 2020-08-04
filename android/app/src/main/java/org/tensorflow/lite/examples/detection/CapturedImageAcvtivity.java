@@ -1,6 +1,7 @@
 package org.tensorflow.lite.examples.detection;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -11,19 +12,37 @@ import android.content.DialogInterface;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
+import android.hardware.camera2.CameraCharacteristics;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.module.AppGlideModule;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -42,9 +61,19 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.WriteBatch;
+import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.face.Face;
+import com.google.mlkit.vision.face.FaceDetection;
+import com.google.mlkit.vision.face.FaceDetector;
+import com.google.mlkit.vision.face.FaceDetectorOptions;
+
+import org.tensorflow.lite.examples.detection.env.ImageUtils;
+import org.tensorflow.lite.examples.detection.tflite.SimilarityClassifier;
+import org.tensorflow.lite.examples.detection.tflite.TFLiteObjectDetectionAPIModel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -53,7 +82,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import noman.googleplaces.NRPlaces;
 import noman.googleplaces.Place;
@@ -66,10 +97,34 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
     private Marker currentMarker = null;
 
+    private final CommonConstants CC = new CommonConstants();
+
     private final String TAG = "CAPTURED";
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int UPDATE_INTERVAL_MS = 1000;  // 1초
     private static final int FASTEST_UPDATE_INTERVAL_MS = 500; // 0.5초
+
+    // MobileFaceNet
+    private static final int TF_OD_API_INPUT_SIZE = 112;
+    private static final boolean TF_OD_API_IS_QUANTIZED = false;
+    private static final String TF_OD_API_MODEL_FILE = "mobile_face_net.tflite";
+
+    private static  boolean checknames = false;
+
+    private static final String TF_OD_API_LABELS_FILE = "file:///android_asset/labelmap.txt";
+
+    private static final boolean MAINTAIN_ASPECT = false;
+
+    //recogintion array
+    RecognitionArray recognitionArray = new RecognitionArray();
+
+    private enum DetectorMode {
+        TF_OD_API;
+    }
+
+    private static final DetectorMode MODE = DetectorMode.TF_OD_API;
+    // Minimum detection confidence to track a detection.
+    private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
 
     // onRequestPermissionsResult에서 수신된 결과에서 ActivityCompat.requestPermissions를 사용한 퍼미션 요청을 구별하기 위해 사용됩니다.
     private static final int PERMISSIONS_REQUEST_CODE = 100;
@@ -85,6 +140,17 @@ public class CapturedImageAcvtivity extends AppCompatActivity
     private LocationRequest locationRequest;
     private Location location;
 
+    //bitmaps
+    private Bitmap rgbFrameBitmap = null;
+    private Bitmap capturedBitmap = null;
+    private Bitmap croppedBitmap = null;
+    private Bitmap cropCopyBitmap = null;
+
+    // here the preview image is drawn in portrait way
+    private Bitmap portraitBmp = null;
+    // here the face is cropped and drawn
+    private Bitmap faceBmp = null;
+
     private View mLayout;  // Snackbar 사용하기 위해서는 View가 필요합니다.
     // (참고로 Toast에서는 Context가 필요했습니다.)
 
@@ -92,6 +158,44 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
     //list view adapter
     ArrayAdapter<String> mListViewAdapter;
+
+    //얼굴을 추출하는 기능
+    FaceDetector faceDetector;
+    private SimilarityClassifier detector;
+
+    //사진이 찍혔을 때 센서의 기울기
+    private Integer sensorOrientation;
+
+    //preview 크기
+    int previewWidth;
+    int previewHeight;
+
+    //transform
+    private Matrix frameToCropTransform;
+    private Matrix cropToFrameTransform;
+
+    //사진이 셀카인지 후면인지 체크
+    private boolean isFacingFront;
+
+    //firebase
+    FirebaseAuth fAuth = FirebaseAuth.getInstance();
+    // get current user info
+    private final FirebaseUser user = fAuth.getCurrentUser();
+
+    private ImageView mCapturedImageView;
+    private TextView mCapturedTextView;
+    private Button mCaputuredBtn;
+
+    private Activity mActivity;
+
+    private StorageReference mStorageRef = FirebaseStorage.getInstance().getReference("Images");
+    private FirebaseFirestore mFireStoreRef = FirebaseFirestore.getInstance();      // PLACE reference
+    private FirebaseFirestore mFireStoreRef2 = FirebaseFirestore.getInstance();     // FRIENDS reference
+    private FirebaseFirestore mFireStoreRef3 = FirebaseFirestore.getInstance();     // PHOTOS reference
+
+
+    //이름 리스트
+    private ArrayList<String> names;
 
     @Override
     public void onPlacesFailure(PlacesException e) {
@@ -155,27 +259,111 @@ public class CapturedImageAcvtivity extends AppCompatActivity
                 .execute();
     }
 
-    FirebaseAuth fAuth = FirebaseAuth.getInstance();
 
-    private ImageView mCapturedImageView;
-    private TextView mCapturedTextView;
-    private Button mCaputuredBtn;
-
-    private Activity mActivity;
-
-    private StorageReference mStorageRef = FirebaseStorage.getInstance().getReference("Images");
-    private FirebaseFirestore mFireStoreRef = FirebaseFirestore.getInstance();      // PLACE reference
-    private FirebaseFirestore mFireStoreRef2 = FirebaseFirestore.getInstance();     // FRIENDS reference
-    private FirebaseFirestore mFireStoreRef3 = FirebaseFirestore.getInstance();     // PHOTOS reference
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_captured_image_acvtivity);
 
+        //전체 화면 설정
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        mCapturedImageView = findViewById(R.id.CapturedImageView);
+        mCapturedTextView = findViewById(R.id.CapturedNames);
+        mCaputuredBtn = findViewById(R.id.CaptureSaveBtn);
+
+        mActivity = this;
+
         Intent intent =  getIntent();
         Uri uri = intent.getParcelableExtra("imageUri");
-        ArrayList<String> namelist = (ArrayList<String>) intent.getSerializableExtra("nameList");
+        previewWidth = intent.getIntExtra("previewWidth", 0);
+        previewHeight = intent.getIntExtra("previewHeight", 0);
+        sensorOrientation = intent.getIntExtra("sensorOrientation", 0);
+        isFacingFront = intent.getBooleanExtra("isFacingFront", false);
+
+        //face detector
+        faceDetector = getFaceDetector();
+
+        if(detector == null)
+        {
+            try{
+                detector =
+                        TFLiteObjectDetectionAPIModel.create(
+                                getAssets(),
+                                TF_OD_API_MODEL_FILE,
+                                TF_OD_API_LABELS_FILE,
+                                TF_OD_API_INPUT_SIZE,
+                                TF_OD_API_IS_QUANTIZED);
+            } catch (final IOException e) {
+                e.printStackTrace();
+                Toast toast =
+                        Toast.makeText(
+                                getApplicationContext(), "Classifier could not be initialized", Toast.LENGTH_SHORT);
+                toast.show();
+                finish();
+            }
+        }
+
+        Log.d(TAG, "oncreate");
+
+
+        //비트맵 크기 조절
+        int targetW, targetH;
+
+        targetH = previewWidth;
+        targetW = previewHeight;
+
+        int cropW = (int) (targetW / 2.0);
+        int cropH = (int) (targetH / 2.0);
+
+        croppedBitmap = Bitmap.createBitmap(cropW, cropH, Bitmap.Config.ARGB_8888);
+        portraitBmp = Bitmap.createBitmap(targetW, targetH, Bitmap.Config.ARGB_8888);
+        faceBmp = Bitmap.createBitmap(TF_OD_API_INPUT_SIZE, TF_OD_API_INPUT_SIZE, Bitmap.Config.ARGB_8888);
+
+        //transform 정의
+        frameToCropTransform =
+                ImageUtils.getTransformationMatrix(
+                        previewWidth, previewHeight,
+                        cropW, cropH,
+                        sensorOrientation, MAINTAIN_ASPECT);
+
+        cropToFrameTransform = new Matrix();
+        frameToCropTransform.invert(cropToFrameTransform);
+
+        //이미지에서 얼굴 인식
+        AnalyzeImage(uri);
+
+        //이미지 띄우기
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap resource = BitmapFactory.decodeFile(uri.getPath());
+                Matrix rotateMatrix = new Matrix();
+                if(isFacingFront)
+                {
+                    rotateMatrix.postRotate(-90); //-360~360
+                }
+                else{
+                    rotateMatrix.postRotate(90); //-360~360
+                }
+
+
+                Bitmap rotated = Bitmap.createBitmap(resource, 0, 0,
+                        resource.getWidth(), resource.getHeight(), rotateMatrix, true);
+
+                Glide.with(mActivity)
+                        .load(rotated)
+                        .into(mCapturedImageView);
+            }
+        });
+
+        //이미지 저장
+        SimpleDateFormat s = new SimpleDateFormat("ddMMyyyyhhmmss");
+        String format = s.format(new Date());
+        String fileName = "image_" + format + ".jpg";
+
         byte[] inputData = new byte[0];
 
         try {
@@ -188,10 +376,6 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         }
 
         final byte[] inputData2 = inputData;
-
-        SimpleDateFormat s = new SimpleDateFormat("ddMMyyyyhhmmss");
-        String format = s.format(new Date());
-        String fileName = "image_" + format + ".jpg";
 
         // get image url
         final String[] imgUrl = {""}; //==> ...??
@@ -214,9 +398,6 @@ public class CapturedImageAcvtivity extends AppCompatActivity
             }
         });
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
         locationRequest = new LocationRequest()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(UPDATE_INTERVAL_MS)
@@ -231,76 +412,6 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
         CheckPermissions(); /* TODO splash에 위치 권한요청도 추가하기 */
 
-        mCapturedImageView = findViewById(R.id.CapturedImageView);
-        mCapturedTextView = findViewById(R.id.CapturedNames);
-        mCaputuredBtn = findViewById(R.id.CaptureSaveBtn);
-
-        mActivity = this;
-
-        // get current user info
-        final FirebaseUser user = fAuth.getCurrentUser();
-
-
-
-//        // PLACE DB input
-//        final GeoPoint location2 = new GeoPoint(mCurrentLocatiion.getLatitude(), mCurrentLocatiion.getLongitude());
-//        String imgUrlPlace = new String();
-//        imgUrlPlace = imgUrl[0];
-//        final Places place = new Places(location2,"Pizza Hut", imgUrlPlace);
-//        final HashMap<String, Object> data3 = place.toMap();
-//
-//        // FRIENDS DB input
-//        String imgUrlFriends = new String();
-//        imgUrlFriends = imgUrl[0];
-//        final Friends friend = new Friends("Sally", imgUrlFriends);
-//        final HashMap<String, Object> data2 = friend.toMap();
-//
-//        // PHOTOS DB input
-//        final ArrayList<String> friends = new ArrayList<>();
-//        friends.add("JEK");
-//        friends.add("ABS");
-//
-//        SimpleDateFormat s2 = new SimpleDateFormat("yyyy-mm-dd");
-//        String timeStamp = s2.format(new Date());
-//
-//        final boolean isLiked = false;
-//
-//        final GeoPoint location3 = new GeoPoint(mCurrentLocatiion.getLatitude(), mCurrentLocatiion.getLongitude());
-//
-//        final Photo photo = new Photo("test url", friends, timeStamp, location3, isLiked);
-//        final HashMap<String, Object> data = photo.toMap();
-
-
-//        final StorageReference riversRef = mStorageRef.child(fileName);
-//        UploadTask uploadTask = riversRef.putBytes(inputData);
-//        uploadTask.addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//                // Handle unsuccessful uploads
-//                Log.d("FIREBASE", "upload failure");
-//            }
-//        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-//                // ...
-//                riversRef.getDownloadUrl(); //업로드한 이미지의 url
-//                Log.d("FIREBASE", "upload success");
-//            }
-//        });
-
-
-        mCapturedTextView.setText(namelist.toString());
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-                Glide.with(mActivity)
-                        .load(uri)
-                        .into(mCapturedImageView);
-            }
-        });
 
         mCaputuredBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -327,7 +438,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
                 WriteBatch batch = mFireStoreRef.batch();
                 String imgOfUrl = imgUrl[0];
 
-                if(namelist.isEmpty())
+                if(names.isEmpty())
                 {
                     // PLACE DB input
                     final GeoPoint location2 = new GeoPoint(mCurrentLocatiion.getLatitude(), mCurrentLocatiion.getLongitude());
@@ -386,8 +497,9 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
                 // PHOTOS DB input
                 final ArrayList<String> friends = new ArrayList<>();
-                for(String name: namelist){
+                for(String name: names){
                     friends.add(name);
+                    Log.d(TAG, "friend: " + name);
                 }
 
                 SimpleDateFormat s2 = new SimpleDateFormat("yyyy-mm-dd");
@@ -400,8 +512,10 @@ public class CapturedImageAcvtivity extends AppCompatActivity
                 final Photo photo = new Photo(imgOfUrl, friends, timeStamp, location3, isLiked);
                 final HashMap<String, Object> data = photo.toMap();
 
+                Log.d(TAG, "p url: " + imgOfUrl);
+
                 mFireStoreRef3
-                        .collection("Users")
+                        .collection(CC.USERS)
                         .document(userEmail)
                         .collection("Photos")
                         .document(photo.getUrl())
@@ -422,6 +536,67 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        recognitionArray.saveToShared(getApplicationContext(), CC.RECOG_SHARED);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put(CC.RECOG_FIELD, recognitionArray.toString());
+
+        mFireStoreRef
+                .collection(CC.USERS)
+                .document(user.getEmail())
+                .collection(CC.RECOG_COL)
+                .document(CC.RECOG_DOC)
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error updating document", e);
+                    }
+                });
+
+        Log.d(TAG, "onPause");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Log.d(TAG, "onResume");
+
+        if(detector == null)
+        {
+            try{
+                detector =
+                        TFLiteObjectDetectionAPIModel.create(
+                                getAssets(),
+                                TF_OD_API_MODEL_FILE,
+                                TF_OD_API_LABELS_FILE,
+                                TF_OD_API_INPUT_SIZE,
+                                TF_OD_API_IS_QUANTIZED);
+            } catch (final IOException e) {
+                e.printStackTrace();
+                Toast toast =
+                        Toast.makeText(
+                                getApplicationContext(), "Classifier could not be initialized", Toast.LENGTH_SHORT);
+                toast.show();
+                finish();
+            }
+        }
+        recognitionArray.loadFromShared(getApplicationContext(), CC.RECOG_SHARED);
+        HashMap<String, SimilarityClassifier.Recognition> recognitionHashMap = recognitionArray.getRecognitions();
+        Log.d(TAG, "size: " + recognitionHashMap.size());
+
+        detector.setRegsisted(recognitionHashMap);
+    }
 
     /*TODO Think about*/
     public byte[] getBytes(InputStream inputStream) throws IOException {
@@ -434,6 +609,39 @@ public class CapturedImageAcvtivity extends AppCompatActivity
             byteBuffer.write(buffer, 0, len);
         }
         return byteBuffer.toByteArray();
+    }
+
+    private void showAddFaceDialog(SimilarityClassifier.Recognition rec) {
+
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogLayout = inflater.inflate(R.layout.image_edit_dialog, null);
+        ImageView ivFace = dialogLayout.findViewById(R.id.dlg_image);
+        TextView tvTitle = dialogLayout.findViewById(R.id.dlg_title);
+        EditText etName = dialogLayout.findViewById(R.id.dlg_input);
+
+        tvTitle.setText("Add Face");
+        ivFace.setImageBitmap(rec.getCrop());
+        etName.setHint("Input name");
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dlg, int i) {
+
+                String name = etName.getText().toString();
+                if (name.isEmpty()) {
+                    return;
+                }
+                detector.register(name, rec);
+                recognitionArray.addRecognition(name, rec);
+                names.add(name);
+                //knownFaces.put(name, rec);
+                dlg.dismiss();
+            }
+        });
+        builder.setView(dialogLayout);
+        builder.show();
+
     }
 
     public void CheckPermissions() {
@@ -487,6 +695,286 @@ public class CapturedImageAcvtivity extends AppCompatActivity
             }
 
         }
+    }
+
+    private FaceDetector getFaceDetector()
+    {
+        FaceDetectorOptions options =
+                new FaceDetectorOptions.Builder()
+                        .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
+                        .setContourMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
+                        .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_NONE)
+                        .build();
+
+
+        FaceDetector detector = FaceDetection.getClient(options);
+
+        return detector;
+    }
+
+    private void AnalyzeImage(Uri uri){
+
+        Bitmap resource = BitmapFactory.decodeFile(uri.getPath());
+        rgbFrameBitmap = resource.copy(Bitmap.Config.ARGB_8888, true);
+
+        final Canvas canvas = new Canvas(croppedBitmap);
+        canvas.drawBitmap(rgbFrameBitmap, frameToCropTransform, null);
+
+        Log.d(TAG, "rgb: " + rgbFrameBitmap.getWidth() + ", " + rgbFrameBitmap.getHeight());
+        Log.d(TAG, "sizecrop: " + croppedBitmap.getWidth() + ", " + croppedBitmap.getHeight());
+        Log.d(TAG, "sensor: " + sensorOrientation);
+        Log.d(TAG, "registed: " + detector.getRegistedNum());
+
+        InputImage image = InputImage.fromBitmap(croppedBitmap, 0);
+
+        Log.d(TAG, "read image");
+
+        faceDetector
+                .process(image)
+                .addOnSuccessListener(new OnSuccessListener<List<Face>>() {
+                    @Override
+                    public void onSuccess(List<Face> faces) {
+                        Log.d(TAG, "process image");
+                        if (faces.size() == 0) {
+                            updateResults(0, new LinkedList<>());
+                            return;
+                        }
+
+                        class ProcessImage extends AsyncTask<Void, Void, Void>{
+                            @Override
+                            protected void onPreExecute() {
+                                super.onPreExecute();
+                            }
+
+                            @Override
+                            protected void onPostExecute(Void aVoid) {
+                                super.onPostExecute(aVoid);
+                            }
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+                                onFacesDetected(0, faces, true,false);
+                                return null;
+                            }
+                        }
+
+
+
+                        ProcessImage task = new ProcessImage();
+                        task.execute();
+                    }
+                });
+    }
+
+    private void updateResults(long currTimestamp, final List<SimilarityClassifier.Recognition> mappedRecognitions) {
+        if (mappedRecognitions.size() > 0) {
+            Log.d(TAG, "not zero");
+            //왜 첫번째 꺼를 할까??????
+
+            names = new ArrayList<>();
+
+            for(SimilarityClassifier.Recognition record : mappedRecognitions)
+            {
+                if (record.getExtra() != null) {
+                    Log.d(TAG, record.toString());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(record.getDistance() < 1.0f && record.getDistance() > 0.0f){
+                                Log.d(TAG, "it is recorded: " + record.getTitle());
+                                names.add(record.getTitle());
+                                mCapturedTextView.setText(names.toString());
+                            }
+                            else {
+                                Log.d(TAG, "it is not recorded");
+                                showAddFaceDialog(record);
+                            }
+                        }
+                    });
+                }
+            }
+
+        }
+        else{
+            Log.d(TAG, "zero");
+        }
+    }
+
+    // Face Processing
+    private Matrix createTransform(
+            final int srcWidth,
+            final int srcHeight,
+            final int dstWidth,
+            final int dstHeight,
+            final int applyRotation) {
+
+        Matrix matrix = new Matrix();
+        if (applyRotation != 0) {
+            if (applyRotation % 90 != 0) {
+                Log.d(TAG, "Rotation of " + applyRotation + " % 90 != 0");
+            }
+
+            // Translate so center of image is at origin.
+            matrix.postTranslate(-srcWidth / 2.0f, -srcHeight / 2.0f);
+
+            // Rotate around origin.
+            matrix.postRotate(applyRotation);
+        }
+
+        if (applyRotation != 0) {
+
+            // Translate back from origin centered reference to destination frame.
+            matrix.postTranslate(dstWidth / 2.0f, dstHeight / 2.0f);
+        }
+
+        return matrix;
+
+    }
+
+
+    //얼굴을 인식해주는 중요한 부분
+    private void onFacesDetected(long currTimestamp, List<Face> faces, boolean add,boolean check) {
+
+        cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
+        final Canvas canvas = new Canvas(cropCopyBitmap);
+        final Paint paint = new Paint();
+        paint.setColor(Color.RED);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2.0f);
+
+        final List<SimilarityClassifier.Recognition> mappedRecognitions =
+                new LinkedList<SimilarityClassifier.Recognition>();
+
+        Log.d(TAG, "faces: " + faces.size());
+        //final List<Classifier.Recognition> results = new ArrayList<>();
+
+        // Note this can be done only once
+        int sourceW = rgbFrameBitmap.getWidth();
+        int sourceH = rgbFrameBitmap.getHeight();
+        int targetW = portraitBmp.getWidth();
+        int targetH = portraitBmp.getHeight();
+        Matrix transform = createTransform(
+                sourceW,
+                sourceH,
+                targetW,
+                targetH,
+                sensorOrientation);
+        final Canvas cv = new Canvas(portraitBmp);
+
+        // draws the original image in portrait mode.
+        cv.drawBitmap(rgbFrameBitmap, transform, null);
+
+        final Canvas cvFace = new Canvas(faceBmp);
+
+        boolean saved = false;
+        ArrayList<String> labels = new ArrayList<>();
+        for (Face face : faces) {
+            Log.d("face", face.toString());
+            //results = detector.recognizeImage(croppedBitmap);
+
+            final RectF boundingBox = new RectF(face.getBoundingBox());
+
+            //final boolean goodConfidence = result.getConfidence() >= minimumConfidence;
+            final boolean goodConfidence = true; //face.get;
+            if (boundingBox != null && goodConfidence) {
+
+                // maps crop coordinates to original
+                cropToFrameTransform.mapRect(boundingBox);
+
+                // maps original coordinates to portrait coordinates
+                RectF faceBB = new RectF(boundingBox);
+                transform.mapRect(faceBB);
+
+                // translates portrait to origin and scales to fit input inference size
+                //cv.drawRect(faceBB, paint);
+                float sx = ((float) TF_OD_API_INPUT_SIZE) / faceBB.width();
+                float sy = ((float) TF_OD_API_INPUT_SIZE) / faceBB.height();
+                Matrix matrix = new Matrix();
+                matrix.postTranslate(-faceBB.left, -faceBB.top);
+                matrix.postScale(sx, sy);
+
+                cvFace.drawBitmap(portraitBmp, matrix, null);
+
+                //canvas.drawRect(faceBB, paint);
+
+                String label = "";
+                float confidence = -1f;
+                Integer color = Color.BLUE;
+                Object extra = null;
+                Bitmap crop = null;
+
+                if (add) {
+                    if(portraitBmp.getWidth() < faceBB.left + faceBB.width()
+                        || portraitBmp.getHeight() < faceBB.top + faceBB.height())
+                    {
+                        continue;
+                    }
+
+                    crop = Bitmap.createBitmap(portraitBmp,
+                            (int) faceBB.left,
+                            (int) faceBB.top,
+                            (int) faceBB.width(),
+                            (int) faceBB.height());
+                }
+
+
+
+
+
+                //여기서 정확도를 측정?해주는 거 같다!
+                final List<SimilarityClassifier.Recognition> resultsAux = detector.recognizeImage(faceBmp, add);
+
+                if (resultsAux.size() > 0) {
+
+                    SimilarityClassifier.Recognition result = resultsAux.get(0);
+
+                    extra = result.getExtra();
+
+                    //distance가 뭘 말하는 걸까?? 진짜거리? 아니면 정확도에서 먼 거리???
+                    float conf = result.getDistance();
+                    if (conf < 1.0f) {
+
+                        confidence = conf;
+                        label = result.getTitle();
+                        Log.d("#@$@#$@", label);
+                        labels.add(label);
+                        //tagging을 해둔 이름(사람)에 포함될 때 녹색 박스를 그려주고 아니면 빨간 박스를 그려준다
+                        if (result.getId().equals("0")) {
+                            color = Color.GREEN;
+                        } else {
+                            color = Color.RED;
+                        }
+                    }
+
+                }
+
+                if (isFacingFront) {
+
+                    // camera is frontal so the image is flipped horizontally
+                    // flips horizontally
+                    Matrix flip = new Matrix();
+                    if (sensorOrientation == 90 || sensorOrientation == 270) {
+                        flip.postScale(1, -1, previewWidth / 2.0f, previewHeight / 2.0f);
+                    } else {
+                        flip.postScale(-1, 1, previewWidth / 2.0f, previewHeight / 2.0f);
+                    }
+                    //flip.postScale(1, -1, targetW / 2.0f, targetH / 2.0f);
+                    flip.mapRect(boundingBox);
+
+                }
+                //여기서는 detector.recognizeImage(faceBmp, add)요기 부터의 코드를 통해 얻어진 값을 넣어주는 거 같다!
+                final SimilarityClassifier.Recognition result = new SimilarityClassifier.Recognition(
+                        "0", label, confidence, boundingBox);
+
+                result.setColor(color);
+                result.setLocation(boundingBox);
+                result.setExtra(extra);
+                result.setCrop(crop);
+                mappedRecognitions.add(result);
+
+            }
+        }
+        updateResults(currTimestamp, mappedRecognitions);
     }
 
     LocationCallback locationCallback = new LocationCallback() {

@@ -20,6 +20,7 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.os.Trace;
+import android.util.Log;
 import android.util.Pair;
 
 import java.io.BufferedReader;
@@ -195,6 +196,16 @@ public class TFLiteObjectDetectionAPIModel
 
   }
 
+  public int getRegistedNum()
+  {
+    return registered.size();
+  }
+
+  public void setRegsisted(HashMap<String, Recognition> registered)
+  {
+    this.registered = new HashMap<>(registered);
+  }
+
 
   @Override
   public List<Recognition> recognizeImage(final Bitmap bitmap, boolean storeExtra) {
@@ -264,7 +275,7 @@ public class TFLiteObjectDetectionAPIModel
 
     //여기서 가까운 놈중 가장 가까운 놈(nearest.first)를 선택하는 거 아닐까?
     if (registered.size() > 0) {
-        //LOGGER.i("dataset SIZE: " + registered.size());
+      Log.d("SAVESAVE", "registered: " + registered.size());
         final Pair<String, Float> nearest = findNearest(embeedings[0]);
         if (nearest != null) {
 
