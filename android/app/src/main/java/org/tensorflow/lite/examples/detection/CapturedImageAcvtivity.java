@@ -56,7 +56,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity {
         mActivity = this;
 
         // get current user info
-        final FirebaseUser user = fAuth.getCurrentUser();
+//        final FirebaseUser user = fAuth.getCurrentUser();
 
         Intent intent =  getIntent();
         Uri uri = intent.getParcelableExtra("imageUri");
@@ -78,23 +78,23 @@ public class CapturedImageAcvtivity extends AppCompatActivity {
         String format = s.format(new Date());
         String fileName = "image_" + format + ".jpg";
 
-//        final StorageReference riversRef = mStorageRef.child(fileName);
-//        UploadTask uploadTask = riversRef.putBytes(inputData);
-//        uploadTask.addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//                // Handle unsuccessful uploads
-//                Log.d("FIREBASE", "upload failure");
-//            }
-//        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-//                // ...
-//                riversRef.getDownloadUrl(); //업로드한 이미지의 url
-//                Log.d("FIREBASE", "upload success");
-//            }
-//        });
+        final StorageReference riversRef = mStorageRef.child(fileName);
+        UploadTask uploadTask = riversRef.putBytes(inputData);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+                Log.d("FIREBASE", "upload failure");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                // ...
+                riversRef.getDownloadUrl(); //업로드한 이미지의 url
+                Log.d("FIREBASE", "upload success");
+            }
+        });
 
 
         mCapturedTextView.setText(namelist.toString());
@@ -109,80 +109,6 @@ public class CapturedImageAcvtivity extends AppCompatActivity {
             }
         });
 
-        mCaputuredBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final StorageReference riversRef = mStorageRef.child(fileName);
-                UploadTask uploadTask = riversRef.putBytes(inputData2);
-                uploadTask.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Handle unsuccessful uploads
-                        Log.d("FIREBASE", "upload failure");
-                    }
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                        // ...
-                        riversRef.getDownloadUrl(); //업로드한 이미지의 url
-                        Log.d("FIREBASE", "upload success");
-                    }
-                });
-
-                String userEmail = user.getEmail();
-                mFireStoreRef
-                        .collection("Users")
-                        .document(userEmail)
-                        .update("Place", data)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "DocumentSnapshot successfully updated!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error updating document", e);
-                            }
-                        });
-
-                mFireStoreRef2
-                        .collection("Users")
-                        .document(userEmail)
-                        .update("Friends", data2)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "DocumentSnapshot successfully updated!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error updating document", e);
-                            }
-                        });
-
-                mFireStoreRef3
-                        .collection("Users")
-                        .document(userEmail)
-                        .update("Photos", data3)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "DocumentSnapshot successfully updated!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error updating document", e);
-                            }
-                        });
-            }
-        });
     }
 
     public byte[] getBytes(InputStream inputStream) throws IOException {

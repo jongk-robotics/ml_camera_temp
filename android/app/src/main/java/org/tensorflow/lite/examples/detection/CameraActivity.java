@@ -101,6 +101,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
   private FloatingActionButton btnSwitchCam;
     private FloatingActionButton btnCheck;
+    private FloatingActionButton go_to_tab_btn;
 
   private static final String KEY_USE_FACING = "use_facing";
   private Integer useFacing = null;
@@ -201,7 +202,7 @@ public abstract class CameraActivity extends AppCompatActivity
     frameValueTextView = findViewById(R.id.frame_info);
     cropValueTextView = findViewById(R.id.crop_info);
     inferenceTimeTextView = findViewById(R.id.inference_info);
-
+      go_to_tab_btn=findViewById(R.id.go_to_tab);
     apiSwitchCompat.setOnCheckedChangeListener(this);
 
     plusImageView.setOnClickListener(this);
@@ -213,6 +214,15 @@ public abstract class CameraActivity extends AppCompatActivity
         onSwitchCamClick();
       }
     });
+      go_to_tab_btn.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+              Intent intent = new Intent(CameraActivity.this, Tab_Activity.class) ;
+
+              startActivity(intent) ;
+
+          }
+      });
 
   }
 
