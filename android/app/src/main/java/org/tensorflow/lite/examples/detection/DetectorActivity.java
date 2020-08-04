@@ -23,7 +23,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -50,8 +49,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.mlkit.vision.common.InputImage;
@@ -72,10 +69,8 @@ import java.util.List;
 import java.util.Locale;
 
 import org.tensorflow.lite.examples.detection.customview.OverlayView;
-import org.tensorflow.lite.examples.detection.customview.OverlayView.DrawCallback;
 import org.tensorflow.lite.examples.detection.env.BorderedText;
 import org.tensorflow.lite.examples.detection.env.ImageUtils;
-import org.tensorflow.lite.examples.detection.env.Logger;
 import org.tensorflow.lite.examples.detection.tflite.SimilarityClassifier;
 import org.tensorflow.lite.examples.detection.tflite.TFLiteObjectDetectionAPIModel;
 import org.tensorflow.lite.examples.detection.tracking.MultiBoxTracker;
@@ -85,8 +80,6 @@ import org.tensorflow.lite.examples.detection.tracking.MultiBoxTracker;
  * objects.
  */
 public class DetectorActivity extends CameraActivity implements OnImageAvailableListener {
-  private static final Logger LOGGER = new Logger();
-
 
   // FaceNet
 //  private static final int TF_OD_API_INPUT_SIZE = 160;
@@ -98,8 +91,14 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   int mDpWidth;
   int mDpHeight;
 
+  //얼굴인식 할지 안할지 결정
+  private boolean isDetectionActive = false;
+
   //activity
   private Activity mActivity = this;
+
+  //TAG
+  private final String TAG = "DetectorActivity";
 
   // MobileFaceNet
   private static final int TF_OD_API_INPUT_SIZE = 112;
@@ -155,6 +154,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   private Bitmap faceBmp = null;
 
   private FloatingActionButton fabAdd;
+  private FloatingActionButton fabSearch;
 
   private boolean isCaptureImage = false;
 
@@ -181,6 +181,14 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       @Override
       public void onClick(View view) {
         onAddClick();
+      }
+    });
+
+    fabSearch = findViewById(R.id.fab_search);
+    fabSearch.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        isDetectionActive = !isDetectionActive;
       }
     });
 
@@ -255,7 +263,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       //cropSize = TF_OD_API_INPUT_SIZE;
     } catch (final IOException e) {
       e.printStackTrace();
-      LOGGER.e(e, "Exception initializing classifier!");
       Toast toast =
               Toast.makeText(
                       getApplicationContext(), "Classifier could not be initialized", Toast.LENGTH_SHORT);
@@ -267,9 +274,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     previewHeight = size.getHeight();
     //아마도 얼굴이 조금 돌아가 있을 때(옆 모습이 찍힐 때) 그 얼굴을 앞을 보는 얼굴로 정규화 할 때 필요할 것 같다.
     sensorOrientation = rotation - getScreenOrientation();
-    LOGGER.i("Camera orientation relative to screen canvas: %d", sensorOrientation);
 
-    LOGGER.i("Initializing at size %dx%d", previewWidth, previewHeight);
     rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
 
 
@@ -316,7 +321,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
     trackingOverlay = (OverlayView) findViewById(R.id.tracking_overlay);
     trackingOverlay.addCallback(
-            new DrawCallback() {
+            new OverlayView.DrawCallback() {
               @Override
               public void drawCallback(final Canvas canvas) {
                 tracker.draw(canvas);
@@ -345,8 +350,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       return;
     }
     computingDetection = true;
-
-    LOGGER.i("Preparing image " + currTimestamp + " for detection in bg thread.");
 
     rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
 
@@ -418,6 +421,14 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       task.execute();
     }
 
+    if(!isDetectionActive){
+      tracker.trackResults(new LinkedList<>(), currTimestamp);
+      computingDetection = false;
+      return;
+    }
+
+    Log.d(TAG, "detectionactive");
+
     final Canvas canvas = new Canvas(croppedBitmap);
     canvas.drawBitmap(rgbFrameBitmap, frameToCropTransform, null);
     // For examining the actual TF input.
@@ -447,8 +458,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
               }
 
             });
-
-
   }
 
   @Override
@@ -489,7 +498,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     Matrix matrix = new Matrix();
     if (applyRotation != 0) {
       if (applyRotation % 90 != 0) {
-        LOGGER.w("Rotation of %d % 90 != 0", applyRotation);
+        Log.d(TAG, "Rotation of " + applyRotation + " % 90 != 0");
       }
 
       // Translate so center of image is at origin.
@@ -559,7 +568,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
 
     if (mappedRecognitions.size() > 0) {
-       LOGGER.i("Adding results");
 
        //왜 첫번째 꺼를 할까??????
        SimilarityClassifier.Recognition rec = mappedRecognitions.get(0);
@@ -628,8 +636,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     nameList = labels;
     for (Face face : faces) {
       Log.d("face",face.toString());
-      LOGGER.i("FACE" + face.toString());
-      LOGGER.i("Running detection on face " + currTimestamp);
       //results = detector.recognizeImage(croppedBitmap);
 
       final RectF boundingBox = new RectF(face.getBoundingBox());

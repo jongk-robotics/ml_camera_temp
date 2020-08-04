@@ -193,6 +193,27 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         String format = s.format(new Date());
         String fileName = "image_" + format + ".jpg";
 
+        // get image url
+        final String[] imgUrl = {""}; //==> ...??
+        final StorageReference riversRef = mStorageRef.child(fileName);
+        UploadTask uploadTask = riversRef.putBytes(inputData2);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+                Log.d("FIREBASE", "upload failure");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                // ...
+                //riversRef.getDownloadUrl(); //업로드한 이미지의 url
+                imgUrl[0] =riversRef.getDownloadUrl().toString();
+                Log.d("FIREBASE", "upload success");
+            }
+        });
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -219,26 +240,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         // get current user info
         final FirebaseUser user = fAuth.getCurrentUser();
 
-        // get image url
-        final String[] imgUrl = {""}; //==> ...??
-        final StorageReference riversRef = mStorageRef.child(fileName);
-        UploadTask uploadTask = riversRef.putBytes(inputData2);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-                Log.d("FIREBASE", "upload failure");
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
-                //riversRef.getDownloadUrl(); //업로드한 이미지의 url
-                imgUrl[0] =riversRef.getDownloadUrl().toString();
-                Log.d("FIREBASE", "upload success");
-            }
-        });
+
 
 //        // PLACE DB input
 //        final GeoPoint location2 = new GeoPoint(mCurrentLocatiion.getLatitude(), mCurrentLocatiion.getLongitude());
@@ -303,7 +305,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         mCaputuredBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                final StorageReference riversRef = mStorageRef.child(fileName);
+//                final StorageReference riversRef = mStorageRef.child(user.getEmail()).child(fileName);
 //                UploadTask uploadTask = riversRef.putBytes(inputData2);
 //                uploadTask.addOnFailureListener(new OnFailureListener() {
 //                    @Override
@@ -321,23 +323,72 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 //                    }
 //                });
 
-                // PLACE DB input
-                final GeoPoint location2 = new GeoPoint(mCurrentLocatiion.getLatitude(), mCurrentLocatiion.getLongitude());
-                String imgUrlPlace = new String();
-                imgUrlPlace = imgUrl[0];
-                final Places place = new Places(location2,"Pizza Hut", imgUrlPlace);
-                final HashMap<String, Object> data3 = place.toMap();
+                String userEmail = user.getEmail();
+                WriteBatch batch = mFireStoreRef.batch();
+                String imgOfUrl = imgUrl[0];
 
-                // FRIENDS DB input
-                String imgUrlFriends = new String();
-                imgUrlFriends = imgUrl[0];
-                final Friends friend = new Friends("Sally", imgUrlFriends);
-                final HashMap<String, Object> data2 = friend.toMap();
+                if(namelist.isEmpty())
+                {
+                    // PLACE DB input
+                    final GeoPoint location2 = new GeoPoint(mCurrentLocatiion.getLatitude(), mCurrentLocatiion.getLongitude());
+                    String imgUrlPlace = new String();
+                    imgUrlPlace = imgOfUrl;
+                    final Places place = new Places(location2,"Pizza Hut", imgUrlPlace);
+                    final HashMap<String, Object> data = place.toMap();
+
+                    mFireStoreRef
+                            .collection("Users")
+                            .document(userEmail)
+                            .collection("Place")
+                            .document(place.getPlaceName())
+                            .set(data)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error updating document", e);
+                                }
+                            });
+                }
+                else{
+                    // FRIENDS DB input
+
+                    /*TODO 친구추가 어떻게 ??*/
+                    String imgUrlFriends = new String();
+                    imgUrlFriends = imgOfUrl;
+                    final Friends friend = new Friends("Sally", imgUrlFriends);
+                    final HashMap<String, Object> data = friend.toMap();
+
+                    mFireStoreRef2
+                            .collection("Users")
+                            .document(userEmail)
+                            .collection("Friends")
+                            .document(friend.getName())
+                            .set(data)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error updating document", e);
+                                }
+                            });
+                }
 
                 // PHOTOS DB input
                 final ArrayList<String> friends = new ArrayList<>();
-                friends.add("JEK");
-                friends.add("ABS");
+                for(String name: namelist){
+                    friends.add(name);
+                }
 
                 SimpleDateFormat s2 = new SimpleDateFormat("yyyy-mm-dd");
                 String timeStamp = s2.format(new Date());
@@ -346,57 +397,15 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
                 final GeoPoint location3 = new GeoPoint(mCurrentLocatiion.getLatitude(), mCurrentLocatiion.getLongitude());
 
-                final Photo photo = new Photo("test url", friends, timeStamp, location3, isLiked);
+                final Photo photo = new Photo(imgOfUrl, friends, timeStamp, location3, isLiked);
                 final HashMap<String, Object> data = photo.toMap();
-
-                String userEmail = user.getEmail();
-
-                WriteBatch batch = mFireStoreRef.batch();
-
-                mFireStoreRef
-                        .collection("Users")
-                        .document(userEmail)
-                        .collection("Place")
-                        .document(place.getPlaceName())
-                        .set(data)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "DocumentSnapshot successfully updated!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error updating document", e);
-                            }
-                        });
-
-                mFireStoreRef2
-                        .collection("Users")
-                        .document(userEmail)
-                        .collection("Friends")
-                        .document(friend.getName())
-                        .set(data2)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "DocumentSnapshot successfully updated!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error updating document", e);
-                            }
-                        });
 
                 mFireStoreRef3
                         .collection("Users")
                         .document(userEmail)
                         .collection("Photos")
                         .document(photo.getUrl())
-                        .set(data3)
+                        .set(data)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
