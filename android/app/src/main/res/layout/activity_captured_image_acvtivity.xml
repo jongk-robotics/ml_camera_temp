@@ -77,11 +77,11 @@
             android:id="@+id/friendRecyclerView"
             android:orientation="horizontal"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="10dp"
+        <ListView
             android:id="@+id/placeRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
             android:orientation="vertical" />
     </LinearLayout>
 

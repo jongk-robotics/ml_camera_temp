@@ -21,14 +21,23 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycl
     private static final String TAG = "RecyclerViewAdapter";
 
     //vars
-    private ArrayList<String> mNames = new ArrayList<>();
-    private ArrayList<String> mImageUrls = new ArrayList<>();
+//    private ArrayList<String> mNames = new ArrayList<>();
+//    private ArrayList<String> mImageUrls = new ArrayList<>();
+    private ArrayList<FriendImage> friends = new ArrayList<>();
+
     private Context mContext;
 
-    public FriendRecyclerViewAdapter(Context context, ArrayList<String> names, ArrayList<String> imageUrls) {
-        mNames = names;
-        mImageUrls = imageUrls;
+    public FriendRecyclerViewAdapter(Context context, ArrayList<FriendImage> friends) {
+        this.friends = friends;
         mContext = context;
+    }
+
+    public FriendRecyclerViewAdapter(Context context) {
+        mContext = context;
+    }
+
+    public void setFriends(ArrayList<FriendImage> friends) {
+        this.friends = friends;
     }
 
     @Override
@@ -43,23 +52,23 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycl
 
         Glide.with(mContext)
                 .asBitmap()
-                .load(mImageUrls.get(position))
+                .load(friends.get(position).getUrl())
                 .into(holder.image);
 
-        holder.name.setText(mNames.get(position));
+        holder.name.setText(friends.get(position).getName());
 
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick: clicked on an image: " + mNames.get(position));
-                Toast.makeText(mContext, mNames.get(position), Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onClick: clicked on an image: " + friends.get(position).getName());
+                Toast.makeText(mContext, friends.get(position).getName(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mImageUrls.size();
+        return friends.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
