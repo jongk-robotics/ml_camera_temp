@@ -7,6 +7,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.app.Activity;
 import android.content.Intent;
@@ -27,6 +28,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -179,6 +181,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
     private ImageView mCapturedImageView;
     private TextView mCapturedTextView;
     private ImageButton mCaputuredBtn;
+    private ImageButton addFriendBtn;
 
     private Activity mActivity;
 
@@ -262,6 +265,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         mCapturedImageView = findViewById(R.id.CapturedImageView);
         mCapturedTextView = findViewById(R.id.CapturedNames);
         mCaputuredBtn = findViewById(R.id.CaptureSaveBtn);
+        addFriendBtn = findViewById(R.id.addFriendBtn);
 
         mActivity = this;
 
@@ -384,6 +388,30 @@ public class CapturedImageAcvtivity extends AppCompatActivity
                 else{
                     Toast.makeText(getApplicationContext(), "위치 정보를 받아 오고 있습니다.", Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        addFriendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context mContext = getApplicationContext();
+                LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+                View layout = inflater.inflate(R.layout.custom_dialog,(ViewGroup) findViewById(R.id.layout_root));
+
+                AlertDialog.Builder aDialog = new AlertDialog.Builder(mContext);//여기서buttontest는 패키지이름
+                aDialog.setTitle("Is your friend not in the list?");
+                aDialog.setView(layout);
+
+                aDialog.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                aDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                AlertDialog ad = aDialog.create();
+                ad.show();
             }
         });
     }
