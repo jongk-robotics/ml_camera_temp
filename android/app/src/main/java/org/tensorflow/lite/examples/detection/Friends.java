@@ -7,15 +7,17 @@ public class Friends {
 
     private String name;
     private Photo photo;
+    private String profileUrl;
 
     public Friends() {
 
     }
 
-    public Friends(String name, Photo photo)
+    public Friends(String name, Photo photo, String profileUrl)
     {
         this.name = name;
         this.photo = photo;
+        this.profileUrl = profileUrl;
     }
 
     public void setName(String name)
@@ -27,8 +29,16 @@ public class Friends {
         this.photo = photo;
     }
 
+    public void setProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
+
     public Photo getPhoto() {
         return photo;
+    }
+
+    public String getProfileUrl() {
+        return profileUrl;
     }
 
     public String getName() {

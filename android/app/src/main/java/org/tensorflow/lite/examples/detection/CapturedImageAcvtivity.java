@@ -47,6 +47,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -54,6 +55,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -79,12 +81,14 @@ import org.tensorflow.lite.examples.detection.tflite.TFLiteObjectDetectionAPIMod
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import noman.googleplaces.NRPlaces;
@@ -209,6 +213,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
     @Override
     public void processLocationNames(ArrayList<String> nameList) {
+        mCurrentLocationNames = nameList;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -379,22 +384,9 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Bitmap resource = BitmapFactory.decodeFile(uri.getPath());
-                Matrix rotateMatrix = new Matrix();
-                if(isFacingFront)
-                {
-                    rotateMatrix.postRotate(-90); //-360~360
-                }
-                else{
-                    rotateMatrix.postRotate(90); //-360~360
-                }
-
-
-                Bitmap rotated = Bitmap.createBitmap(resource, 0, 0,
-                        resource.getWidth(), resource.getHeight(), rotateMatrix, true);
 
                 Glide.with(mActivity)
-                        .load(rotated)
+                        .load(uri)
                         .into(mCapturedImageView);
             }
         });
@@ -558,136 +550,168 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
         // get image url
         final StorageReference riversRef = mStorageRef.child(fileName);
-        UploadTask uploadTask = riversRef.putBytes(inputData2);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
+        final UploadTask uploadTask=riversRef.putFile(uri);
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-                Log.d("FIREBASE", "upload failure");
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if(!task.isSuccessful()){
+                    //throw.task.getException();
+                }
+                return riversRef.getDownloadUrl();
             }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
-                //riversRef.getDownloadUrl(); //업로드한 이미지의 url
-                String imageUrl =riversRef.getDownloadUrl().toString();
+            public void onComplete(@NonNull Task<Uri> task) {
+                if(task.isSuccessful()){
+                    Uri downloadUri = task.getResult();
+                    String imageUrl = String.valueOf(downloadUri);
+                    uploadData(downloadUri);
+                }else{
 
-                uploadData(imageUrl);
-                Log.d("FIREBASE", "upload success");
+                }
             }
         });
+
+//        UploadTask uploadTask = riversRef.putBytes(inputData2);
+//        uploadTask.addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception exception) {
+//                // Handle unsuccessful uploads
+//                Log.d("FIREBASE", "upload failure");
+//            }
+//        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//            @Override
+//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+//                // ...
+//                //riversRef.getDownloadUrl(); //업로드한 이미지의 url
+//                String imageUrl = riversRef.getDownloadUrl().toString();
+//                Log.d("url",imageUrl);
+//
+//                uploadData(imageUrl);
+//                Log.d("FIREBASE", "upload success");
+//            }
+//        });
     }
 
-    void uploadData(String imgOfUrl)
+    void uploadData(Uri imgOfUrl)
     {
         String userEmail = user.getEmail();
 
+        Date day = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.KOREA);
+        String fileName = String.valueOf(sdf.format(day));
+
         //이미지 데이터
-        SimpleDateFormat s2 = new SimpleDateFormat("yyyy-mm-dd");
-        String timeStamp = s2.format(new Date());
+        Timestamp timeStamp = new Timestamp(new Date());
 
         final boolean isLiked = false;
 
-        final GeoPoint location3 = new GeoPoint(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        final GeoPoint location = new GeoPoint(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 
-        Photo.PhotoType type;
-        if(names.isEmpty()){
-            type = Photo.PhotoType.PLACE;
-        }
-        else{
-            type = Photo.PhotoType.FRIEND;
-        }
+        final Photo photo = new Photo();
+        photo.setUserEmail(userEmail);
+        photo.setFriends(names);
+        photo.setLocation(location);
+        photo.setLocationName(mCurrentLocationNames.get(0));
+        photo.setTimeStamp(timeStamp);
+        photo.setUrl(imgOfUrl.toString());
 
-        final Photo photo = new Photo(imgOfUrl, names, timeStamp, location3, type, isLiked);
         final HashMap<String, Object> photoData = photo.toMap();
 
         Log.d(TAG, "p url: " + imgOfUrl);
 
-        if(names.isEmpty())
+        WriteBatch batch = mFireStoreRef.batch();
+        DocumentReference ImageRef =  mFireStoreRef
+                .collection("Images")
+                .document(fileName);
+
+        batch.set(ImageRef, photoData);
+
+        if(!names.isEmpty())
         {
-            // PLACE DB input
-            final GeoPoint location2 = new GeoPoint(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-            final Places place = new Places(location2,mCurrentLocationNames.get(0), photo);
-            final HashMap<String, Object> placeData = place.PlaceToMap();
+            for(String name : names){
+                DocumentReference FriendRef = mFireStoreRef
+                        .collection("Users")
+                        .document(userEmail)
+                        .collection("Friend")
+                        .document(name);
 
-            WriteBatch batch = mFireStoreRef.batch();
-            DocumentReference PlaceRef =  mFireStoreRef
-                    .collection("Users")
-                    .document(userEmail)
-                    .collection("Place")
-                    .document(place.getPlaceName());
-
-            batch.set(PlaceRef, placeData);
-
-            DocumentReference PhotoRef = PlaceRef
-                    .collection("Photo")
-                    .document(photo.getUrl());
-
-            batch.set(PhotoRef, photoData);
-
-            batch.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Log.d(TAG, "DocumentSnapshot successfully updated!");
-                    Toast.makeText(getApplicationContext(), "업로드 완료", Toast.LENGTH_SHORT).show();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.w(TAG, "Error updating document", e);
-                }
-            });
+                Friends friends = new Friends(name, photo, imgOfUrl.toString());
+                batch.set(FriendRef, friends);
+            }
         }
-        else{
-            // FRIENDS DB input
 
-            /*TODO 친구추가 어떻게 ??*/
-            String imgUrlFriends = new String();
-            final Friends friend = new Friends("Sally", photo);
-            final HashMap<String, Object> frienData = friend.toMap();
+        batch.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "DocumentSnapshot successfully updated!");
+                Toast.makeText(getApplicationContext(), "업로드 완료", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), Tab_Activity.class);
+                startActivity(intent);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "Error updating document", e);
+            }
+        });
 
-            mFireStoreRef2
-                    .collection("Users")
-                    .document(userEmail)
-                    .collection("Friends")
-                    .document(friend.getName())
-                    .set(frienData)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d(TAG, "DocumentSnapshot successfully updated!");
-
-                            mFireStoreRef2
-                                    .collection("Users")
-                                    .document(userEmail)
-                                    .collection("Friends")
-                                    .document(friend.getName())
-                                    .collection("Photo")
-                                    .document(photo.getUrl())
-                                    .set(photoData)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Log.d(TAG, "DocumentSnapshot successfully updated!");
-                                            Toast.makeText(getApplicationContext(), "업로드 완료", Toast.LENGTH_SHORT).show();
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.w(TAG, "Error updating document", e);
-                                        }
-                                    });
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error updating document", e);
-                        }
-                    });
-        }
+//        if(names.isEmpty())
+//        {
+//
+//        }
+//        else{
+//            // FRIENDS DB input
+//
+//            /*TODO 친구추가 어떻게 ??*/
+//            String imgUrlFriends = new String();
+//            final Friends friend = new Friends("Sally", photo);
+//            final HashMap<String, Object> frienData = friend.toMap();
+//
+//            mFireStoreRef2
+//                    .collection("Users")
+//                    .document(userEmail)
+//                    .collection("Friends")
+//                    .document(friend.getName())
+//                    .set(frienData)
+//                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                        @Override
+//                        public void onSuccess(Void aVoid) {
+//                            Log.d(TAG, "DocumentSnapshot successfully updated!");
+//
+//                            mFireStoreRef2
+//                                    .collection("Users")
+//                                    .document(userEmail)
+//                                    .collection("Friends")
+//                                    .document(friend.getName())
+//                                    .collection("Photo")
+//                                    .document(photo.getUrl())
+//                                    .set(photoData)
+//                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                        @Override
+//                                        public void onSuccess(Void aVoid) {
+//                                            Log.d(TAG, "DocumentSnapshot successfully updated!");
+//                                            Toast.makeText(getApplicationContext(), "업로드 완료", Toast.LENGTH_SHORT).show();
+//                                            Intent intent = new Intent(getApplicationContext(), Tab_Activity.class);
+//                                            startActivity(intent);
+//                                        }
+//                                    })
+//                                    .addOnFailureListener(new OnFailureListener() {
+//                                        @Override
+//                                        public void onFailure(@NonNull Exception e) {
+//                                            Log.w(TAG, "Error updating document", e);
+//                                        }
+//                                    });
+//                        }
+//                    })
+//                    .addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            Log.w(TAG, "Error updating document", e);
+//                        }
+//                    });
+//        }
     }
 
 
@@ -874,7 +898,21 @@ public class CapturedImageAcvtivity extends AppCompatActivity
     private void AnalyzeImage(Uri uri){
 
         Bitmap resource = BitmapFactory.decodeFile(uri.getPath());
-        rgbFrameBitmap = resource.copy(Bitmap.Config.ARGB_8888, true);
+
+        Matrix rotateMatrix = new Matrix();
+        if(isFacingFront)
+        {
+            rotateMatrix.postRotate(90); //-360~360
+        }
+        else{
+            rotateMatrix.postRotate(-90); //-360~360
+        }
+
+
+        Bitmap rotated = Bitmap.createBitmap(resource, 0, 0,
+                resource.getWidth(), resource.getHeight(), rotateMatrix, true);
+
+        rgbFrameBitmap = rotated.copy(Bitmap.Config.ARGB_8888, true);
 
         final Canvas canvas = new Canvas(croppedBitmap);
         canvas.drawBitmap(rgbFrameBitmap, frameToCropTransform, null);
@@ -949,6 +987,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
                                 Log.d(TAG, "it is not recorded");
 
                                 String name = showAddFaceDialog(record);
+                                recordedNames.add(name);
 //                                if(!name.isEmpty())
 //                                {
 //
@@ -957,6 +996,8 @@ public class CapturedImageAcvtivity extends AppCompatActivity
                             }
                         }
                     }
+
+                    names = recordedNames;
 
 //                    uploadFriends(newFriends);
                     updateFriendRecyclerView(recordedNames);

@@ -459,7 +459,21 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
       try {
         FileOutputStream filestream = new FileOutputStream(file);
-        rgbFrameBitmap.compress(Bitmap.CompressFormat.PNG, 0, filestream);
+
+        Matrix rotateMatrix = new Matrix();
+        if(isFacingFront)
+        {
+          rotateMatrix.postRotate(-90); //-360~360
+        }
+        else{
+          rotateMatrix.postRotate(90); //-360~360
+        }
+
+
+        Bitmap rotated = Bitmap.createBitmap(rgbFrameBitmap, 0, 0,
+                rgbFrameBitmap.getWidth(), rgbFrameBitmap.getHeight(), rotateMatrix, true);
+
+        rotated.compress(Bitmap.CompressFormat.PNG, 0, filestream);
 
       } catch (FileNotFoundException e) {
         e.printStackTrace();

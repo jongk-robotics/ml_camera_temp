@@ -17,6 +17,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -29,12 +31,12 @@ public class Image_Adapter extends BaseAdapter {
     private ArrayList<String> thumbsDataList;
     private ArrayList<String> thumbsIDList;
     private Context mContext;
-    ArrayList<Bitmap> photos = new ArrayList<Bitmap>();
+    ArrayList<Photo> photos = new ArrayList<Photo>();
 
     Image_Adapter(Context c){
         mContext = c;
-        thumbsDataList = new ArrayList<String>();
-        thumbsIDList = new ArrayList<String>();
+//        thumbsDataList = new ArrayList<String>();
+//        thumbsIDList = new ArrayList<String>();
     }
 
 
@@ -43,24 +45,30 @@ public class Image_Adapter extends BaseAdapter {
     }
 
     public int getCount() {
-        return thumbsIDList.size();
+        return photos.size();
     }
 
     public Object getItem(int position) {
-        return position;
+        return photos.get(position);
     }
 
     public long getItemId(int position) {
         return position;
     }
-    public void addItem(Bitmap photo) {
+    public void addItem(Photo photo) {
         photos.add(photo);
+    }
+
+    public void setPhotos(ArrayList<Photo> photos) {
+        this.photos = photos;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView;
-            imageView = new ImageView(mContext);
-        Glide.with(mContext).load(thumbsDataList.get(position)).into(imageView);
+        imageView = new ImageView(mContext);
+
+        Log.d("adapter", "url: " + photos.get(position).getUrl());
+        Glide.with(mContext).load(photos.get(position).getUrl()).into(imageView);
 
         return imageView;
     }
