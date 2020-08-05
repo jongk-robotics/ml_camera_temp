@@ -24,17 +24,12 @@ import static android.content.Context.MODE_PRIVATE;
 
 
 public class Image_Adapter extends BaseAdapter {
-    private String imgData;
-    private String geoData;
-    private ArrayList<String> thumbsDataList;
-    private ArrayList<String> thumbsIDList;
     private Context mContext;
-    ArrayList<Bitmap> photos = new ArrayList<Bitmap>();
+    private ArrayList<Bitmap> photos;
 
     Image_Adapter(Context c){
         mContext = c;
-        thumbsDataList = new ArrayList<String>();
-        thumbsIDList = new ArrayList<String>();
+        photos = new ArrayList<Bitmap>();
     }
 
 
@@ -43,7 +38,7 @@ public class Image_Adapter extends BaseAdapter {
     }
 
     public int getCount() {
-        return thumbsIDList.size();
+        return photos.size();
     }
 
     public Object getItem(int position) {
@@ -60,7 +55,7 @@ public class Image_Adapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView;
             imageView = new ImageView(mContext);
-        Glide.with(mContext).load(thumbsDataList.get(position)).into(imageView);
+        Glide.with(mContext).load(photos.get(position)).into(imageView);
 
         return imageView;
     }

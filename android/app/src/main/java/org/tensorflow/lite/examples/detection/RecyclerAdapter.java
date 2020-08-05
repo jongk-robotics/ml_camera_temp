@@ -14,6 +14,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -133,7 +135,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             textView1.setText(data.getName());
             textView2.setText(data.getTime());
 //            button = itemView.findViewById(R.id.PHONEBUTTON);
-            profile_view.setImageBitmap(data.getProfile());
+
+            //uri-> glide
+            Glide.with().load(data.getProfile()).into(profile_view);
         }
 
     }

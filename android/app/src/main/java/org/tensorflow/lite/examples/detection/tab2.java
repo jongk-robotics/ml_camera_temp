@@ -41,14 +41,15 @@ public class tab2 extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         ArrayList name =new ArrayList();
-        ArrayList<Bitmap> profile  = new ArrayList<>();
+        ArrayList<String> profile  = new ArrayList<>();
 
 //여기서 firebase에서 데이터 가져와서 넣음
+
         for (int i = 0; i < name.size(); i++) {
             // 각 List의 값들을 data 객체에 set 해줍니다.
             Data data = new Data();
             data.setName((String) name.get(i));
-            data.setProfile((Bitmap) profile.get(i));
+            data.setProfile((String) profile.get(i));
 
             // 각 값이 들어간 data를 adapter에 추가합니다.
             adapter.addItem(data);

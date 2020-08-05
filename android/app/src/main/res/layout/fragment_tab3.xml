@@ -11,11 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true" />
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/black_gradient" >
-    </FrameLayout>
 
 
 
@@ -40,62 +35,62 @@
 
 
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_margin="15dp">
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_margin="15dp">
-            <TextView
-                android:id="@+id/visits"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:textSize="15dp"
-                android:text="Visits"
-                android:textColor="#FFF"/>
-            <TextView
-                android:id="@+id/visitsCount"
-                android:layout_height="wrap_content"
-                android:layout_width="50dp"
-                android:layout_marginLeft="10dp"
-                android:textSize="15dp"
-                android:textColor="#CCCCCC"
-                android:text="200"/>
-            <TextView
-                android:id="@+id/scraps"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:textSize="15dp"
-                android:text="Scraps"
-                android:textColor="#FFF"/>
-            <TextView
-                android:id="@+id/scrapsCount"
-                android:layout_height="wrap_content"
-                android:layout_width="50dp"
-                android:layout_marginLeft="10dp"
-                android:textSize="15dp"
-                android:textColor="#CCCCCC"
-                android:text="200"/>
-        </LinearLayout>
+<!--    <LinearLayout-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="vertical"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_alignParentLeft="true"-->
+<!--        android:layout_margin="15dp">-->
+<!--        <LinearLayout-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:layout_margin="15dp">-->
+<!--            <TextView-->
+<!--                android:id="@+id/visits"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:textSize="15dp"-->
+<!--                android:text="Visits"-->
+<!--                android:textColor="#FFF"/>-->
+<!--            <TextView-->
+<!--                android:id="@+id/visitsCount"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_width="50dp"-->
+<!--                android:layout_marginLeft="10dp"-->
+<!--                android:textSize="15dp"-->
+<!--                android:textColor="#CCCCCC"-->
+<!--                android:text="200"/>-->
+<!--            <TextView-->
+<!--                android:id="@+id/scraps"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:textSize="15dp"-->
+<!--                android:text="Scraps"-->
+<!--                android:textColor="#FFF"/>-->
+<!--            <TextView-->
+<!--                android:id="@+id/scrapsCount"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_width="50dp"-->
+<!--                android:layout_marginLeft="10dp"-->
+<!--                android:textSize="15dp"-->
+<!--                android:textColor="#CCCCCC"-->
+<!--                android:text="200"/>-->
+<!--        </LinearLayout>-->
 
-        <TextView
-            android:id="@+id/commuPlaceName"
-            android:layout_marginLeft="15dp"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:text="Commu Place Name"
-            android:textColor="#FFF"
-            android:layout_marginBottom="60dp"/>
+<!--        <TextView-->
+<!--            android:id="@+id/commuPlaceName"-->
+<!--            android:layout_marginLeft="15dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:textSize="20dp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:text="Commu Place Name"-->
+<!--            android:textColor="#FFF"-->
+<!--            android:layout_marginBottom="60dp"/>-->
 
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
 
 </RelativeLayout>

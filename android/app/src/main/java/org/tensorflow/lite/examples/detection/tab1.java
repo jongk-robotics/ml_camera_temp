@@ -4,10 +4,13 @@ import android.Manifest;
 
 import android.app.Activity;
 import android.content.ContentProviderOperation;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +24,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -33,13 +37,14 @@ public class tab1 extends AppCompatActivity {
     EditText editText;
     EditText editText2;
     Button button;
-    Image_Adapter ImageAdapter;
+    Image_Adapter_clickable ImageAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_tab1);
         gridView = (GridView) findViewById(R.id.grid_view);
         ImageView profile_image = findViewById(R.id.profile_image);
+        ImageAdapter = new Image_Adapter_clickable(this);
 //        ArrayList<Bitmap> bitmapArrayList = encoding.DecodingImage(email, 0);
 
 
@@ -64,7 +69,22 @@ public class tab1 extends AppCompatActivity {
 //
 //
 //        gridView.setAdapter(ImageAdapter);
+        for( int i=0; i<10; i ++){
 
+            Context context = getApplicationContext();
+            Drawable drawable = getResources().getDrawable(R.drawable.cute);
+
+            Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+
+            ImageAdapter.addItem(bitmap,"diary");
+        }
+        ImageAdapter.notifyDataSetChanged();
+         gridView.setAdapter(ImageAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            public void onItemClick(AdapterView parent, View v, int position, long id){
+                ImageAdapter.callImageViewer(position);
+            }
+        });
 
     }
 }
