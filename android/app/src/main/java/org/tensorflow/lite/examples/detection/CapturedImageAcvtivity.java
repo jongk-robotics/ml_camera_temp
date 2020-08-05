@@ -1,7 +1,6 @@
 package org.tensorflow.lite.examples.detection;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -19,30 +18,22 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
-import android.hardware.camera2.CameraCharacteristics;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.module.AppGlideModule;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -51,6 +42,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 
 import com.bumptech.glide.Glide;
@@ -58,10 +51,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.WriteBatch;
-import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -133,12 +126,15 @@ public class CapturedImageAcvtivity extends AppCompatActivity
     // 앱을 실행하기 위해 필요한 퍼미션을 정의합니다.
     String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};  // 외부 저장소
 
-    Location mCurrentLocatiion;
+    Location mCurrentLocation;
     LatLng currentPosition;
+
+    //place api 관련
+    ArrayList<String> mCurrentLocationNames = new ArrayList<>();
+    boolean isUpdatingPlaceName;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest locationRequest;
-    private Location location;
 
     //bitmaps
     private Bitmap rgbFrameBitmap = null;
@@ -155,9 +151,6 @@ public class CapturedImageAcvtivity extends AppCompatActivity
     // (참고로 Toast에서는 Context가 필요했습니다.)
 
     List<Marker> previous_marker = null;
-
-    //list view adapter
-    ArrayAdapter<String> mListViewAdapter;
 
     //얼굴을 추출하는 기능
     FaceDetector faceDetector;
@@ -195,21 +188,22 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
 
     //이름 리스트
-    private ArrayList<String> names;
+    private ArrayList<String> names = new ArrayList<>();
 
     @Override
     public void onPlacesFailure(PlacesException e) {
-
+        isUpdatingPlaceName = false;
+        e.printStackTrace();
     }
 
     @Override
     public void onPlacesStart() {
-
+        isUpdatingPlaceName = true;
     }
 
     @Override
     public void onPlacesSuccess(List<Place> places) {
-        final ArrayList<String> locations = new ArrayList<>();
+        mCurrentLocationNames = new ArrayList<>();
 
         final String point = "point_of_interest";
 
@@ -224,25 +218,19 @@ public class CapturedImageAcvtivity extends AppCompatActivity
                         String tempType = new String(type);
                         if(type.equals(point))
                         {
-                            locations.add(place.getName());
+                            mCurrentLocationNames.add(place.getName());
                             break;
                         }
 
                     }
-
-
                 }
-
-                mListViewAdapter.clear();
-                mListViewAdapter.addAll(locations);
-                mListViewAdapter.notifyDataSetChanged();
             }
         });
     }
 
     @Override
     public void onPlacesFinished() {
-
+        isUpdatingPlaceName = false;
     }
 
     public void showPlaceInformation(LatLng location)
@@ -359,6 +347,48 @@ public class CapturedImageAcvtivity extends AppCompatActivity
             }
         });
 
+        locationRequest = new LocationRequest()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(UPDATE_INTERVAL_MS)
+                .setFastestInterval(FASTEST_UPDATE_INTERVAL_MS);
+
+        LocationSettingsRequest.Builder builder =
+                new LocationSettingsRequest.Builder();
+
+        builder.addLocationRequest(locationRequest);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        CheckPermissions(); /* TODO splash에 위치 권한요청도 추가하기 */
+
+
+        mCaputuredBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mCurrentLocation != null && currentPosition != null)
+                {
+                    if(mCurrentLocationNames.isEmpty())
+                    {
+                        if(!isUpdatingPlaceName)
+                        {
+                            Log.d(TAG, "update place name");
+                            showPlaceInformation(currentPosition);
+                        }
+                        Toast.makeText(getApplicationContext(), "위치 정보를 받아 오고 있습니다.", Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        uploadImage(uri);
+                    }
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "위치 정보를 받아 오고 있습니다.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    void uploadImage(Uri uri)
+    {
         //이미지 저장
         SimpleDateFormat s = new SimpleDateFormat("ddMMyyyyhhmmss");
         String format = s.format(new Date());
@@ -378,7 +408,6 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         final byte[] inputData2 = inputData;
 
         // get image url
-        final String[] imgUrl = {""}; //==> ...??
         final StorageReference riversRef = mStorageRef.child(fileName);
         UploadTask uploadTask = riversRef.putBytes(inputData2);
         uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -393,148 +422,125 @@ public class CapturedImageAcvtivity extends AppCompatActivity
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                 // ...
                 //riversRef.getDownloadUrl(); //업로드한 이미지의 url
-                imgUrl[0] =riversRef.getDownloadUrl().toString();
+                String imageUrl =riversRef.getDownloadUrl().toString();
+
+                uploadData(imageUrl);
                 Log.d("FIREBASE", "upload success");
             }
         });
-
-        locationRequest = new LocationRequest()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(UPDATE_INTERVAL_MS)
-                .setFastestInterval(FASTEST_UPDATE_INTERVAL_MS);
-
-        LocationSettingsRequest.Builder builder =
-                new LocationSettingsRequest.Builder();
-
-        builder.addLocationRequest(locationRequest);
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-        CheckPermissions(); /* TODO splash에 위치 권한요청도 추가하기 */
-
-
-        mCaputuredBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                final StorageReference riversRef = mStorageRef.child(user.getEmail()).child(fileName);
-//                UploadTask uploadTask = riversRef.putBytes(inputData2);
-//                uploadTask.addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception exception) {
-//                        // Handle unsuccessful uploads
-//                        Log.d("FIREBASE", "upload failure");
-//                    }
-//                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                    @Override
-//                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-//                        // ...
-//                        riversRef.getDownloadUrl(); //업로드한 이미지의 url
-//                        Log.d("FIREBASE", "upload success");
-//                    }
-//                });
-
-                String userEmail = user.getEmail();
-                WriteBatch batch = mFireStoreRef.batch();
-                String imgOfUrl = imgUrl[0];
-
-                if(names.isEmpty())
-                {
-                    // PLACE DB input
-                    final GeoPoint location2 = new GeoPoint(mCurrentLocatiion.getLatitude(), mCurrentLocatiion.getLongitude());
-                    String imgUrlPlace = new String();
-                    imgUrlPlace = imgOfUrl;
-                    final Places place = new Places(location2,"Pizza Hut", imgUrlPlace);
-                    final HashMap<String, Object> data = place.toMap();
-
-                    mFireStoreRef
-                            .collection("Users")
-                            .document(userEmail)
-                            .collection("Place")
-                            .document(place.getPlaceName())
-                            .set(data)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d(TAG, "DocumentSnapshot successfully updated!");
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w(TAG, "Error updating document", e);
-                                }
-                            });
-                }
-                else{
-                    // FRIENDS DB input
-
-                    /*TODO 친구추가 어떻게 ??*/
-                    String imgUrlFriends = new String();
-                    imgUrlFriends = imgOfUrl;
-                    final Friends friend = new Friends("Sally", imgUrlFriends);
-                    final HashMap<String, Object> data = friend.toMap();
-
-                    mFireStoreRef2
-                            .collection("Users")
-                            .document(userEmail)
-                            .collection("Friends")
-                            .document(friend.getName())
-                            .set(data)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d(TAG, "DocumentSnapshot successfully updated!");
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w(TAG, "Error updating document", e);
-                                }
-                            });
-                }
-
-                // PHOTOS DB input
-                final ArrayList<String> friends = new ArrayList<>();
-                for(String name: names){
-                    friends.add(name);
-                    Log.d(TAG, "friend: " + name);
-                }
-
-                SimpleDateFormat s2 = new SimpleDateFormat("yyyy-mm-dd");
-                String timeStamp = s2.format(new Date());
-
-                final boolean isLiked = false;
-
-                final GeoPoint location3 = new GeoPoint(mCurrentLocatiion.getLatitude(), mCurrentLocatiion.getLongitude());
-
-                final Photo photo = new Photo(imgOfUrl, friends, timeStamp, location3, isLiked);
-                final HashMap<String, Object> data = photo.toMap();
-
-                Log.d(TAG, "p url: " + imgOfUrl);
-
-                mFireStoreRef3
-                        .collection(CC.USERS)
-                        .document(userEmail)
-                        .collection("Photos")
-                        .document(photo.getUrl())
-                        .set(data)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "DocumentSnapshot successfully updated!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error updating document", e);
-                            }
-                        });
-            }
-        });
     }
+
+    void uploadData(String imgOfUrl)
+    {
+        String userEmail = user.getEmail();
+
+        //이미지 데이터
+        SimpleDateFormat s2 = new SimpleDateFormat("yyyy-mm-dd");
+        String timeStamp = s2.format(new Date());
+
+        final boolean isLiked = false;
+
+        final GeoPoint location3 = new GeoPoint(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+
+        Photo.PhotoType type;
+        if(names.isEmpty()){
+            type = Photo.PhotoType.PLACE;
+        }
+        else{
+            type = Photo.PhotoType.FRIEND;
+        }
+
+        final Photo photo = new Photo(imgOfUrl, names, timeStamp, location3, type, isLiked);
+        final HashMap<String, Object> photoData = photo.toMap();
+
+        Log.d(TAG, "p url: " + imgOfUrl);
+
+        if(names.isEmpty())
+        {
+            // PLACE DB input
+            final GeoPoint location2 = new GeoPoint(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+            final Places place = new Places(location2,mCurrentLocationNames.get(0), photo);
+            final HashMap<String, Object> placeData = place.PlaceToMap();
+
+            WriteBatch batch = mFireStoreRef.batch();
+            DocumentReference PlaceRef =  mFireStoreRef
+                    .collection("Users")
+                    .document(userEmail)
+                    .collection("Place")
+                    .document(place.getPlaceName());
+
+            batch.set(PlaceRef, placeData);
+
+            DocumentReference PhotoRef = PlaceRef
+                    .collection("Photo")
+                    .document(photo.getUrl());
+
+            batch.set(PhotoRef, photoData);
+
+            batch.commit().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d(TAG, "DocumentSnapshot successfully updated!");
+                    Toast.makeText(getApplicationContext(), "업로드 완료", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w(TAG, "Error updating document", e);
+                }
+            });
+        }
+        else{
+            // FRIENDS DB input
+
+            /*TODO 친구추가 어떻게 ??*/
+            String imgUrlFriends = new String();
+            final Friends friend = new Friends("Sally", photo);
+            final HashMap<String, Object> frienData = friend.toMap();
+
+            mFireStoreRef2
+                    .collection("Users")
+                    .document(userEmail)
+                    .collection("Friends")
+                    .document(friend.getName())
+                    .set(frienData)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "DocumentSnapshot successfully updated!");
+
+                            mFireStoreRef2
+                                    .collection("Users")
+                                    .document(userEmail)
+                                    .collection("Friends")
+                                    .document(friend.getName())
+                                    .collection("Photo")
+                                    .document(photo.getUrl())
+                                    .set(photoData)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                            Toast.makeText(getApplicationContext(), "업로드 완료", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w(TAG, "Error updating document", e);
+                                        }
+                                    });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error updating document", e);
+                        }
+                    });
+        }
+    }
+
 
     @Override
     protected void onPause() {
@@ -985,13 +991,13 @@ public class CapturedImageAcvtivity extends AppCompatActivity
             List<Location> locationList = locationResult.getLocations();
 
             if (locationList.size() > 0) {
-                location = locationList.get(locationList.size() - 1);
+                Location location = locationList.get(locationList.size() - 1);
                 //location = locationList.get(0);
 
                 currentPosition
                         = new LatLng(location.getLatitude(), location.getLongitude());              /*TODO currentPosition.latitude & currentPosition.longitude 나타내주기*/
 
-                mCurrentLocatiion = location;
+                mCurrentLocation = location;
 
                 Log.d(TAG, "location updated");
             }

@@ -7,17 +7,17 @@ import java.util.HashMap;
 public class Places {
     private GeoPoint location;
     private String placeName;
-    private String imgUrl;
+    private Photo photo;
 
     public Places() {
 
     }
 
-    public Places(GeoPoint location, String placeName, String imgUrl)
+    public Places(GeoPoint location, String placeName, Photo photo)
     {
         this.location = location;
         this.placeName = placeName;
-        this.imgUrl = imgUrl;
+        this.photo = photo;
     }
 
     public void setLocation(GeoPoint location)
@@ -30,29 +30,31 @@ public class Places {
         this.placeName = placeName;
     }
 
-    public void setImgUrls(String imgUrls)
-    {
-        this.imgUrl = imgUrl;
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
     }
 
     public GeoPoint getLocation() {
         return location;
     }
 
-    public String getImgUrl() {
-        return imgUrl;
+    public Photo getPhoto() {
+        return photo;
     }
 
     public String getPlaceName() {
         return placeName;
     }
 
-    public HashMap<String, Object> toMap(){
+    public HashMap<String, Object> PlaceToMap(){
         HashMap<String, Object> result=new HashMap<>();
         result.put("location", location);
         result.put("placeName", placeName);
-        result.put("imgUrl", imgUrl);
 
         return result;
+    }
+
+    public HashMap<String, Object> PhotoToMap(){
+        return photo.toMap();
     }
 }

@@ -10,19 +10,23 @@ public class Photo {
     private ArrayList<String> friends;
     private String timeStamp;
     private GeoPoint location;
+    private PhotoType photoType;
     private boolean isLiked;
+
+    public static enum PhotoType {PLACE, FRIEND}
 
 
     public Photo() {
 
     }
 
-    public Photo(String url,ArrayList<String> friends, String timeStamp, GeoPoint location, boolean isLiked)
+    public Photo(String url,ArrayList<String> friends, String timeStamp, GeoPoint location, PhotoType photoType, boolean isLiked)
     {
         this.url = url;
         this.friends = friends;
         this.timeStamp = timeStamp;
         this.location = location;
+        this.photoType = photoType;
         this.isLiked = isLiked;
     }
 
@@ -61,6 +65,7 @@ public class Photo {
         result.put("friends", friends);
         result.put("timeStamp", timeStamp);
         result.put("location", location);
+        result.put("photoType", photoType);
         result.put("isLiked", isLiked);
 
         return result;

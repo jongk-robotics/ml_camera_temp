@@ -6,16 +6,16 @@ import java.util.HashMap;
 public class Friends {
 
     private String name;
-    private String imgUrl;
+    private Photo photo;
 
     public Friends() {
 
     }
 
-    public Friends(String name, String imgUrl)
+    public Friends(String name, Photo photo)
     {
         this.name = name;
-        this.imgUrl = imgUrl;
+        this.photo = photo;
     }
 
     public void setName(String name)
@@ -23,13 +23,12 @@ public class Friends {
         this.name = name;
     }
 
-    public void setImgUrl(String imgUrl)
-    {
-        this.imgUrl = imgUrl;
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
     }
 
-    public String getImgUrl() {
-        return imgUrl;
+    public Photo getPhoto() {
+        return photo;
     }
 
     public String getName() {
@@ -39,7 +38,7 @@ public class Friends {
     public HashMap<String, Object> toMap(){
         HashMap<String, Object> result=new HashMap<>();
         result.put("name", name);
-        result.put("imgUrls", imgUrl);
+        result.put("photo", photo);
 
         return result;
     }
