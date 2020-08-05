@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".tab2"
+    android:id="@+id/Tab2"
+    android:layout_marginTop="20dp"
+
+    >
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <!--    <Button-->
+    <!--        android:id="@+id/btnContactAdd"-->
+    <!--        android:layout_width="108dp"-->
+    <!--        android:layout_height="68dp"-->
+    <!--        android:onClick="mOnContactAdd"-->
+    <!--        android:padding="5dp"-->
+    <!--        android:text="연락처 추가"-->
+    <!--        android:textSize="14dp" />-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="370dp" />
+
+</LinearLayout>

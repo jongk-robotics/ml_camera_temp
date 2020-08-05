@@ -1,0 +1,39 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".tab3"
+    android:id="@+id/Tab3"
+    android:orientation="vertical"
+    >
+
+    <Button
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp"
+        android:id="@+id/button1"
+        android:layout_gravity="end"
+        android:focusableInTouchMode="true"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:background="@drawable/menu"/>
+
+    <!-- TODO: Update blank fragment layout -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <!--    <Button-->
+    <!--        android:id="@+id/btnContactAdd"-->
+    <!--        android:layout_width="108dp"-->
+    <!--        android:layout_height="68dp"-->
+    <!--        android:onClick="mOnContactAdd"-->
+    <!--        android:padding="5dp"-->
+    <!--        android:text="연락처 추가"-->
+    <!--        android:textSize="14dp" />-->
+
+</LinearLayout>
