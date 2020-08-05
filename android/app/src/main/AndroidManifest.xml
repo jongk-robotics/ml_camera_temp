@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_facerec_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.ObjectDetection">
-        <activity android:name=".CapturedImageAcvtivity"></activity>
+        <activity android:name=".CommuActivity"></activity>
+        <activity android:name=".CapturedImageAcvtivity" />
         <activity
             android:name=".DetectorActivity"
             android:label="@string/tfe_od_app_name"
@@ -28,8 +29,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Tab_Activity"></activity>
-
+        <activity android:name=".Tab_Activity" />
     </application>
 
 </manifest>

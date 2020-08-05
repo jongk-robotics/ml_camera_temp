@@ -1,26 +1,101 @@
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".tab3"
-    android:id="@+id/Tab3"
-    >
+    android:id="@+id/Tab3">
 
-    <!-- TODO: Update blank fragment layout -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
+        android:layout_alignParentTop="true" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/black_gradient" >
+    </FrameLayout>
 
-    <!--    <Button-->
-    <!--        android:id="@+id/btnContactAdd"-->
-    <!--        android:layout_width="108dp"-->
-    <!--        android:layout_height="68dp"-->
-    <!--        android:onClick="mOnContactAdd"-->
-    <!--        android:padding="5dp"-->
-    <!--        android:text="연락처 추가"-->
-    <!--        android:textSize="14dp" />-->
 
-</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="15dp">
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/gatherCommunity"
+            android:background="@drawable/ic_baseline_border_all_24" />
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/scrap"
+            android:background="@drawable/ic_baseline_star_border_24" />
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="15dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="15dp">
+            <TextView
+                android:id="@+id/visits"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textSize="15dp"
+                android:text="Visits"
+                android:textColor="#FFF"/>
+            <TextView
+                android:id="@+id/visitsCount"
+                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_marginLeft="10dp"
+                android:textSize="15dp"
+                android:textColor="#CCCCCC"
+                android:text="200"/>
+            <TextView
+                android:id="@+id/scraps"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textSize="15dp"
+                android:text="Scraps"
+                android:textColor="#FFF"/>
+            <TextView
+                android:id="@+id/scrapsCount"
+                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_marginLeft="10dp"
+                android:textSize="15dp"
+                android:textColor="#CCCCCC"
+                android:text="200"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/commuPlaceName"
+            android:layout_marginLeft="15dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:text="Commu Place Name"
+            android:textColor="#FFF"
+            android:layout_marginBottom="60dp"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>
