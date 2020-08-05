@@ -5,6 +5,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -28,10 +30,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,9 +56,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -87,7 +94,7 @@ import noman.googleplaces.PlacesListener;
 
 public class CapturedImageAcvtivity extends AppCompatActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback,
-        PlacesListener {
+        PlaceNameRequest.processLocation{
 
     private Marker currentMarker = null;
 
@@ -132,7 +139,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
     //place api 관련
     ArrayList<String> mCurrentLocationNames = new ArrayList<>();
-    boolean isUpdatingPlaceName;
+    boolean isUpdatingPlaceNameFromFireBase;
 
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest locationRequest;
@@ -179,6 +186,12 @@ public class CapturedImageAcvtivity extends AppCompatActivity
     private ImageView mCapturedImageView;
     private TextView mCapturedTextView;
     private ImageButton mCaputuredBtn;
+    private ListView mPlaceRecyclerView;
+    private RecyclerView mFriendRecyclerView;
+
+    //recycler view adapter
+    private ArrayAdapter<String> mPlaceRecyclerViewAdapter;
+    private FriendRecyclerViewAdapter mFriedRecyclerViewAdapter;
 
     private Activity mActivity;
 
@@ -187,66 +200,81 @@ public class CapturedImageAcvtivity extends AppCompatActivity
     private FirebaseFirestore mFireStoreRef2 = FirebaseFirestore.getInstance();     // FRIENDS reference
     private FirebaseFirestore mFireStoreRef3 = FirebaseFirestore.getInstance();     // PHOTOS reference
 
+    //장소 이름 가져오는 기능
+    private PlaceNameRequest placeNameRequest;
+
 
     //이름 리스트
     private ArrayList<String> names = new ArrayList<>();
 
     @Override
-    public void onPlacesFailure(PlacesException e) {
-        isUpdatingPlaceName = false;
-        e.printStackTrace();
-    }
-
-    @Override
-    public void onPlacesStart() {
-        isUpdatingPlaceName = true;
-    }
-
-    @Override
-    public void onPlacesSuccess(List<Place> places) {
-        mCurrentLocationNames = new ArrayList<>();
-
-        final String point = "point_of_interest";
-
+    public void processLocationNames(ArrayList<String> nameList) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                for (noman.googleplaces.Place place : places) {
-                    Log.d(TAG, "location: " + place.getLatitude() + ", " + place.getLongitude());
-                    Log.d(TAG, "name: " + place.getName());
-                    for(String type : place.getTypes())
-                    {
-                        String tempType = new String(type);
-                        if(type.equals(point))
-                        {
-                            mCurrentLocationNames.add(place.getName());
-                            break;
-                        }
-
-                    }
-                }
+                updatePlaceRecyclerView(nameList);
             }
         });
     }
 
-    @Override
-    public void onPlacesFinished() {
-        isUpdatingPlaceName = false;
-    }
+//    @Override
+//    public void onPlacesFailure(PlacesException e) {
+//        isUpdatingFPlaceName = false;
+//        e.printStackTrace();
+//    }
+//
+//    @Override
+//    public void onPlacesStart() {
+//        isUpdatingPlaceName = true;
+//    }
+//
+//    @Override
+//    public void onPlacesSuccess(List<Place> places) {
+//        mCurrentLocationNames = new ArrayList<>();
+//
+//        final String point = "point_of_interest";
+//
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                for (noman.googleplaces.Place place : places) {
+//                    Log.d(TAG, "location: " + place.getLatitude() + ", " + place.getLongitude());
+//                    Log.d(TAG, "name: " + place.getName());
+//                    for(String type : place.getTypes())
+//                    {
+//                        String tempType = new String(type);
+//                        if(type.equals(point))
+//                        {
+//                            mCurrentLocationNames.add(place.getName());
+//                            break;
+//                        }
+//
+//                    }
+//                }
+//
+//                updatePlaceRecyclerView(mCurrentLocationNames);
+//            }
+//        });
+//    }
 
-    public void showPlaceInformation(LatLng location)
-    {
-        if (previous_marker != null)
-            previous_marker.clear();//지역정보 마커 클리어
+//    @Override
+//    public void onPlacesFinished() {
+//        isUpdatingPlaceName = false;
+//    }
 
-        new NRPlaces.Builder()
-                .listener(CapturedImageAcvtivity.this)
-                .key(getString(R.string.places_api_key))
-                .latlng(location.latitude, location.longitude)//현재 위치
-                .radius(30) //500 미터 내에서 검색
-                .build()
-                .execute();
-    }
+//    public void showPlaceInformation(LatLng location)
+//    {
+//        if (previous_marker != null)
+//            previous_marker.clear();//지역정보 마커 클리어
+//
+//        new NRPlaces.Builder()
+//                .listener(CapturedImageAcvtivity.this)
+//                .key(getString(R.string.places_api_key))
+//                .latlng(location.latitude, location.longitude)//현재 위치
+//                .radius(30) //500 미터 내에서 검색
+//                .build()
+//                .execute();
+//    }
 
 
 
@@ -261,6 +289,8 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
         mCapturedImageView = findViewById(R.id.CapturedImageView);
         mCapturedTextView = findViewById(R.id.CapturedNames);
+        mPlaceRecyclerView = findViewById(R.id.placeRecyclerView);
+        mFriendRecyclerView = findViewById(R.id.friendRecyclerView);
         mCaputuredBtn = findViewById(R.id.CaptureSaveBtn);
 
         mActivity = this;
@@ -271,6 +301,27 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         previewHeight = intent.getIntExtra("previewHeight", 0);
         sensorOrientation = intent.getIntExtra("sensorOrientation", 0);
         isFacingFront = intent.getBooleanExtra("isFacingFront", false);
+
+        //recyclerViewAdapter
+        ArrayList<String> initData = new ArrayList<>();
+        initData.add("처리중입니다.");
+        mPlaceRecyclerViewAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, initData);
+        mPlaceRecyclerView.setAdapter(mPlaceRecyclerViewAdapter);
+
+        mFriendRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        mFriedRecyclerViewAdapter = new FriendRecyclerViewAdapter(this);
+        mFriendRecyclerView.setAdapter(mFriedRecyclerViewAdapter);
+
+        //장소 이름 가져오는 기능 초기화
+        String key = getString(R.string.places_api_key);
+        String userEmail = user.getEmail();
+
+        CollectionReference colRef = mFireStoreRef
+                .collection("Users")
+                .document(userEmail)
+                .collection("Place");
+
+        placeNameRequest = new PlaceNameRequest(key, this, colRef, 30);
 
         //face detector
         faceDetector = getFaceDetector();
@@ -370,11 +421,13 @@ public class CapturedImageAcvtivity extends AppCompatActivity
                 {
                     if(mCurrentLocationNames.isEmpty())
                     {
-                        if(!isUpdatingPlaceName)
-                        {
-                            Log.d(TAG, "update place name");
-                            showPlaceInformation(currentPosition);
-                        }
+//                        if(!isUpdatingPlaceNameFromFireBase)
+//                        {
+//                            Log.d(TAG, "update place name");
+//                            showPlaceInformation(currentPosition);
+//                        }
+                        Log.d(TAG, "update place name");
+                        placeNameRequest.startGetNames(mCurrentLocation);
                         Toast.makeText(getApplicationContext(), "위치 정보를 받아 오고 있습니다.", Toast.LENGTH_LONG).show();
                     }
                     else{
@@ -387,6 +440,101 @@ public class CapturedImageAcvtivity extends AppCompatActivity
             }
         });
     }
+
+    void updatePlaceRecyclerView(ArrayList<String> placeList)
+    {
+        mPlaceRecyclerViewAdapter.clear();
+        mPlaceRecyclerViewAdapter.addAll(placeList);
+        mPlaceRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    void updateFriendRecyclerView(ArrayList<String> nameList)
+    {
+        final CommonConstants CC = new CommonConstants();
+        final String userEmail = user.getEmail();
+        final CollectionReference colRef = mFireStoreRef.collection("Users").document(userEmail).collection("Friends");
+
+
+
+        colRef
+            .get()
+            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        ArrayList<FriendImage> friends = new ArrayList<>();
+
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String name = (String) document.get("name");
+                            String url = (String) document.get("profile");
+
+                            if(nameList.contains(name)){
+                                friends.add(new FriendImage(name, url));
+                                Log.d(TAG, "name: " + name + "url: " + url);
+                            }
+                        }
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mFriedRecyclerViewAdapter.setFriends(friends);
+                                mFriedRecyclerViewAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    } else {
+                        Log.d(TAG, "Error getting documents: ", task.getException());
+                    }
+                }
+            });
+    }
+
+//    void uploadFriends(HashMap<String, Bitmap> friends)
+//    {
+//
+//    }
+//
+//    void uploadFriendImage(String name, Bitmap bitmap)
+//    {
+//        //이미지 저장
+//        SimpleDateFormat s = new SimpleDateFormat("ddMMyyyyhhmmss");
+//        String format = s.format(new Date());
+//        String fileName = "image_" + format + ".jpg";
+//
+//        byte[] inputData = new byte[0];
+//
+//        try {
+//            InputStream iStream =  getContentResolver().openInputStream(uri);
+//            inputData = getBytes(iStream);
+//        }
+//        catch (IOException e)
+//        {
+//            e.printStackTrace();
+//        }
+//
+//        final byte[] inputData2 = inputData;
+//
+//        // get image url
+//        final StorageReference riversRef = mStorageRef.child(fileName);
+//        UploadTask uploadTask = riversRef.putBytes(inputData2);
+//        uploadTask.addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception exception) {
+//                // Handle unsuccessful uploads
+//                Log.d("FIREBASE", "upload failure");
+//            }
+//        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//            @Override
+//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+//                // ...
+//                //riversRef.getDownloadUrl(); //업로드한 이미지의 url
+//                String imageUrl =riversRef.getDownloadUrl().toString();
+//
+//                uploadData(imageUrl);
+//                Log.d("FIREBASE", "upload success");
+//            }
+//        });
+//    }
 
     void uploadImage(Uri uri)
     {
@@ -618,7 +766,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         return byteBuffer.toByteArray();
     }
 
-    private void showAddFaceDialog(SimilarityClassifier.Recognition rec) {
+    private String showAddFaceDialog(SimilarityClassifier.Recognition rec) {
 
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -631,17 +779,20 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         ivFace.setImageBitmap(rec.getCrop());
         etName.setHint("Input name");
 
+        final String[] name = {""};
+
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dlg, int i) {
 
-                String name = etName.getText().toString();
-                if (name.isEmpty()) {
+                name[0] = etName.getText().toString();
+                if (name[0].isEmpty()) {
                     return;
                 }
-                detector.register(name, rec);
-                recognitionArray.addRecognition(name, rec);
-                names.add(name);
+                detector.register(name[0], rec);
+                recognitionArray.addRecognition(name[0], rec);
+
+//                names.add(name[0]);
                 //knownFaces.put(name, rec);
                 dlg.dismiss();
             }
@@ -649,6 +800,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         builder.setView(dialogLayout);
         builder.show();
 
+        return name[0];
     }
 
     public void CheckPermissions() {
@@ -778,28 +930,38 @@ public class CapturedImageAcvtivity extends AppCompatActivity
             Log.d(TAG, "not zero");
             //왜 첫번째 꺼를 할까??????
 
-            names = new ArrayList<>();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ArrayList<String> recordedNames = new ArrayList<>();
+                    ArrayList<String> newNames = new ArrayList<>();
+                    HashMap<String, Bitmap> newFriends = new HashMap<>();
 
-            for(SimilarityClassifier.Recognition record : mappedRecognitions)
-            {
-                if (record.getExtra() != null) {
-                    Log.d(TAG, record.toString());
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+                    for(SimilarityClassifier.Recognition record : mappedRecognitions)
+                    {
+                        if (record.getExtra() != null) {
+                            Log.d(TAG, record.toString());
                             if(record.getDistance() < 1.0f && record.getDistance() > 0.0f){
                                 Log.d(TAG, "it is recorded: " + record.getTitle());
-                                names.add(record.getTitle());
-                                mCapturedTextView.setText(names.toString());
+                                recordedNames.add(record.getTitle());
                             }
                             else {
                                 Log.d(TAG, "it is not recorded");
-                                showAddFaceDialog(record);
+
+                                String name = showAddFaceDialog(record);
+//                                if(!name.isEmpty())
+//                                {
+//
+//                                    newFriends.put(name, Bitmap.createBitmap(record.getCrop()));
+//                                }
                             }
                         }
-                    });
+                    }
+
+//                    uploadFriends(newFriends);
+                    updateFriendRecyclerView(recordedNames);
                 }
-            }
+            });
 
         }
         else{
@@ -989,6 +1151,8 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         public void onLocationResult(LocationResult locationResult) {
             super.onLocationResult(locationResult);
 
+
+
             List<Location> locationList = locationResult.getLocations();
 
             if (locationList.size() > 0) {
@@ -997,7 +1161,6 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
                 currentPosition
                         = new LatLng(location.getLatitude(), location.getLongitude());              /*TODO currentPosition.latitude & currentPosition.longitude 나타내주기*/
-
                 mCurrentLocation = location;
 
                 Log.d(TAG, "location updated");
