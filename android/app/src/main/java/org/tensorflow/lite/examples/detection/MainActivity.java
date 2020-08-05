@@ -127,10 +127,6 @@ public class MainActivity extends Activity {
             e.printStackTrace();
         }
 
-        bshView = findViewById(R.id.bshView);
-        IUView = findViewById(R.id.IUView);
-        realBshView = findViewById(R.id.realBshView);
-
         BitmapFactory.Options ops = new BitmapFactory.Options();
         ops.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
