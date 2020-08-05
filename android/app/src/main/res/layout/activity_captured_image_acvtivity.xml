@@ -8,9 +8,24 @@
 
     <ImageView
         android:id="@+id/CapturedImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:srcCompat="@drawable/sample_image" />
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/sample_image" />
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="15dp">
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/CaptureSaveBtn"
+            android:background="@drawable/ic_baseline_save_alt_24" />
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/CapturedNames"
@@ -18,17 +33,57 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="176dp"
-        android:layout_marginBottom="99dp"
+        android:layout_marginEnd="179dp"
+        android:layout_marginBottom="613dp"
         android:text="TextView" />
 
-    <Button
-        android:id="@+id/CaptureSaveBtn"
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/CapturedNames"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="161dp"
-        android:layout_marginBottom="69dp"
-        android:text="Button" />
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="15dp">
+
+        <ImageButton
+            android:id="@+id/addFriendBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="450dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/circle_button"
+            android:src="@drawable/ic_baseline_person_add_24"/>
+        <ImageButton
+            android:id="@+id/addPlaceBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="450dp"
+            android:background="@drawable/circle_button"
+            android:src="@drawable/ic_baseline_add_location_24"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="15dp">
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:id="@+id/friendRecyclerView"
+            android:orientation="horizontal"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="10dp"
+            android:id="@+id/placeRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" />
+    </LinearLayout>
+
+
 </RelativeLayout>

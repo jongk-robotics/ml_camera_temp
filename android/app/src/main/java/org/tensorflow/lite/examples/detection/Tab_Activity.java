@@ -8,21 +8,27 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.app.TabActivity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TabHost;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
-public class Tab_Activity extends AppCompatActivity {
+public class Tab_Activity extends TabActivity {
 
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-    private TabItem tab1,tab2,tab3;
-    public PageAdapter pageradapter;
+//    private TabLayout tabLayout;
+//    private ViewPager viewPager;
+//    private TabItem tab1,tab2,tab3;
 
     //권한에 대한 응답이 있을때 작동하는 함수
     @Override
@@ -56,17 +62,69 @@ public class Tab_Activity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 100);
         }
         checkSelfPermission();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+
         setContentView(R.layout.activity_main);
+//
+//        tabLayout =(TabLayout) findViewById(R.id.tablayout);
+//        tab1=(TabItem) findViewById(R.id.Tab1);
+//        tab2=(TabItem) findViewById(R.id.Tab2);
+//        tab3=(TabItem) findViewById(R.id.Tab3);
+//        viewPager=findViewById(R.id.viewpager);
+//        pageradapter = new PageAdapter(getSupportFragmentManager(),tabLayout.getTabCount());
+//        viewPager.setAdapter(pageradapter);
+//
+//        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+//        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
-        tabLayout =(TabLayout) findViewById(R.id.tablayout);
-        tab1=(TabItem) findViewById(R.id.Tab1);
-        tab2=(TabItem) findViewById(R.id.Tab2);
-        tab3=(TabItem) findViewById(R.id.Tab3);
-        viewPager=findViewById(R.id.viewpager);
-        pageradapter = new PageAdapter(getSupportFragmentManager(),tabLayout.getTabCount());
-        viewPager.setAdapter(pageradapter);
+        Resources res = getResources();
+        TabHost tabHost = getTabHost();
+        TabHost.TabSpec spec;
+        Intent intent;
 
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
+
+        intent = new Intent(this, tab1.class);
+
+
+
+
+        ImageView tab1 = new ImageView(this);
+        ImageView tab2 = new ImageView(this);
+        ImageView tab3 = new ImageView(this);
+        tab1.setImageResource(R.drawable.icon_tab1);
+        tab2.setImageResource(R.drawable.icon_tab2);
+        tab3.setImageResource(R.drawable.icon_tab3);
+
+
+        spec = tabHost.newTabSpec("artists").setIndicator(tab1)
+                .setContent(intent);
+        tabHost.addTab(spec);
+
+        intent = new Intent(this, tab2.class);
+
+
+            spec = tabHost.newTabSpec("albums").setIndicator(tab2)
+                    .setContent(intent);
+            tabHost.addTab(spec);
+
+        intent = new Intent(this, tab3.class);
+
+        spec = tabHost.newTabSpec("songs").setIndicator(tab3)
+                .setContent(intent);
+        tabHost.addTab(spec);
+
+        tabHost.setCurrentTab(0);
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int screenHeight=metrics.heightPixels;
+        tabHost.getTabWidget().getChildAt(0).getLayoutParams().height=(screenHeight*15)/200;
+        tabHost.getTabWidget().getChildAt(1).getLayoutParams().height=(screenHeight*15)/200;
+        tabHost.getTabWidget().getChildAt(2).getLayoutParams().height=(screenHeight*15)/200;
+
+
     }
 }

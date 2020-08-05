@@ -127,7 +127,9 @@ public abstract class CameraActivity extends AppCompatActivity
     //useFacing = intent.getIntExtra(KEY_USE_FACING, CameraCharacteristics.LENS_FACING_FRONT);
     useFacing = intent.getIntExtra(KEY_USE_FACING, CameraCharacteristics.LENS_FACING_BACK);
 
-    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+//    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+      getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+              WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
     setContentView(R.layout.tfe_od_activity_camera);
     Toolbar toolbar = findViewById(R.id.toolbar);

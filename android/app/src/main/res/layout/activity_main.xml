@@ -1,51 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
 
-    xmlns:tools="http://schemas.android.com/tools"
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:id="@android:id/tabhost"
+tools:context=".Tab_Activity"
+    android:background="#E2000000">
+
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical"
+    >
+        <TextView
+            android:id="@+id/timestamp1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:includeFontPadding="false"
+            android:layout_marginTop="10dp"
+            android:text="Look"
+            android:textColor="#FFE91E63"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/font"/>
+        <TextView
+            android:id="@+id/timestamp2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:includeFontPadding="false"
+            android:text="At Me"
+            android:textColor="#FFE91E63"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/font"/>
 
-    <LinearLayout
+
+    <FrameLayout
+        android:id="@android:id/tabcontent"
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toTopOf="parent"
-        tools:context=".MainActivity"
-        android:orientation="vertical">
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/viewpager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/tablayout">
 
-            <com.google.android.material.tabs.TabLayout
-                android:layout_gravity="bottom"
-                android:id="@+id/tablayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#FFFFFF"
-                app:tabTextColor="@android:color/black"
-                android:layout_alignParentBottom="true"
-                >
+        >
 
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/Tab1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/tabSong"
 
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/Tab2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+            android:orientation="vertical" >
+        </LinearLayout>
 
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/Tab3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:id="@+id/tabArtist">
+        </LinearLayout>
 
-            </com.google.android.material.tabs.TabLayout>
-    </androidx.viewpager.widget.ViewPager>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:id="@+id/tabAlbum">
+        </LinearLayout>
 
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+    <TabWidget
+
+        android:id="@android:id/tabs"
+        android:layout_gravity="bottom"
+        android:background="#28000000"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </TabWidget>
+
+
+</LinearLayout>
+
+</TabHost>
+
+
+<!--    <?xml version="1.0" encoding="utf-8"?>-->
+<!--<androidx.constraintlayout.widget.ConstraintLayout-->
+
+<!--xmlns:tools="http://schemas.android.com/tools"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="match_parent"-->
+<!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--android:background="#DD000000"-->
+<!--    >-->
+
+<!--<LinearLayout-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:orientation="vertical"-->
+<!--    app:layout_constraintBottom_toTopOf="parent"-->
+<!--    app:layout_constraintTop_toTopOf="parent"-->
+<!--    tools:context=".MainActivity">-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/timestamp1"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:includeFontPadding="false"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:text="Look"-->
+<!--        android:textColor="#FFE91E63"-->
+<!--        android:textSize="17sp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:fontFamily="@font/font"/>-->
+<!--    <TextView-->
+<!--        android:id="@+id/timestamp2"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:includeFontPadding="false"-->
+<!--        android:text="At Me"-->
+<!--        android:textColor="#FFE91E63"-->
+<!--        android:textSize="14sp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:fontFamily="@font/font"/>-->
+
+
+<!--    <androidx.viewpager.widget.ViewPager-->
+<!--        android:id="@+id/viewpager"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_above="@+id/tablayout"-->
+
+<!--        >-->
+
+<!--        <com.google.android.material.tabs.TabLayout-->
+<!--            android:id="@+id/tablayout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_gravity="bottom"-->
+<!--            app:tabTextColor="@android:color/black">-->
+
+<!--            <com.google.android.material.tabs.TabItem-->
+<!--                android:id="@+id/Tab1"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:icon="@drawable/icon_tab1"-->
+<!--                />-->
+
+<!--            <com.google.android.material.tabs.TabItem-->
+<!--                android:id="@+id/Tab2"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:icon="@drawable/icon_tab2"-->
+
+<!--                />-->
+
+<!--            <com.google.android.material.tabs.TabItem-->
+<!--                android:id="@+id/Tab3"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:icon="@drawable/icon_tab3"-->
+
+<!--                />-->
+
+<!--        </com.google.android.material.tabs.TabLayout>-->
+<!--    </androidx.viewpager.widget.ViewPager>-->
+
+<!--</LinearLayout>-->
+<!--</androidx.constraintlayout.widget.ConstraintLayout>-->

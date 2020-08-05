@@ -8,12 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> {
 
@@ -56,37 +60,80 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
         private TextView textView1;
         private TextView textView2;
+        private CircleImageView profile_view;
         private Button button;
         ItemViewHolder(View itemView) {
             super(itemView);
-
-            textView1 = itemView.findViewById(R.id.textView1);
-            textView2 = itemView.findViewById(R.id.textView2);
-            button = itemView.findViewById(R.id.PHONEBUTTON);
-            button.setOnClickListener(new Button.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
                 public void onClick(View v) {
-                    int pos = getAdapterPosition() ;
-                    if (pos != RecyclerView.NO_POSITION) {
-                        Log.d("RecyclerAdapter","good");
-//                        Intent intent =new Intent(mContext,phonepopup.class);
-//                        intent.putExtra("name", listData.get(pos).getName());
-//                        intent.putExtra("number", listData.get(pos).getNumber());
-//
-//                        mContext.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    Intent intent = new Intent(mContext, Friend_gallery.class);
 
-                    }
+                    //여기서 어떤 사람을 선택했는지 전달 !
 
 
+                    mContext.startActivity(intent);
                 }
             });
+
+            textView1 = itemView.findViewById(R.id.friend_name);
+            textView2 = itemView.findViewById(R.id.timestamp);
+            profile_view = itemView.findViewById(R.id.profile_image);
+//            button = itemView.findViewById(R.id.PHONEBUTTON);
+//            button.setOnClickListener(new Button.OnClickListener() {
+//                public void onClick(View v) {
+//                    int pos = getAdapterPosition() ;
+//                    if (pos != RecyclerView.NO_POSITION) {
+//                        Log.d("RecyclerAdapter","good");
+////                        Intent intent =new Intent(mContext,phonepopup.class);
+////                        intent.putExtra("name", listData.get(pos).getName());
+////                        intent.putExtra("number", listData.get(pos).getNumber());
+////
+////                        mContext.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+//
+//                    }
+//
+//
+//                }
+//            });
+            final Integer[] progr = {0};
+            Button button_incr = itemView.findViewById(R.id.button_incr);
+            Button button_decr = itemView.findViewById(R.id.button_decr);
+            ProgressBar progressBar = itemView.findViewById(R.id.progress_bar);
+
+
+
+            //여기서 버튼 대신에 이미지 계수 받아서 계산하면 될듯..?
+            //Integer Image_num = 디비에서 이미지 개수 가져오기, 여기서 한 번에 가져오는 방법 생각해야 할 듯?  ;
+            //progress.setProgress(Image_num);
+
+            button_incr.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (progr[0] <= 90) {
+                        progr[0] += 10;
+                        progressBar.setProgress(progr[0]);
+                    }
+                }
+            });
+            button_decr.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (progr[0] >= 10) {
+                        progr[0] -= 10;
+                        progressBar.setProgress(progr[0]);
+                    }
+                }
+            });
+
 
         }
 
         void onBind(Data data) {
             textView1.setText(data.getName());
-            textView2.setText(data.getNumber());
-            button = itemView.findViewById(R.id.PHONEBUTTON);
-
+            textView2.setText(data.getTime());
+//            button = itemView.findViewById(R.id.PHONEBUTTON);
+            profile_view.setImageBitmap(data.getProfile());
         }
 
     }

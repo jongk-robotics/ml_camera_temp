@@ -1,17 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".tab1"
-    android:id="@+id/Tab1"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
 
     >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50sp"
+        >
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image"
+        app:civ_border_width="2dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/profile2"
+        android:layout_marginLeft="50dp"
 
-    <!-- TODO: Update blank fragment layout -->
 
+        />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:text="name"
+        android:fontFamily="@font/font"
+
+        android:id="@+id/galley_name"
+        android:textSize="20sp"
+        android:gravity="center_horizontal"
+        />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/font"
+
+                android:text="info"
+                android:id="@+id/galley_information"
+                android:textSize="20sp"
+                android:gravity="center_horizontal"
+                />
+
+        </LinearLayout>
+    </LinearLayout>
     <GridView
+        android:layout_marginTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:numColumns="auto_fit"
@@ -25,13 +65,5 @@
 
     </GridView>
 
-    <!--    <Button-->
-    <!--        android:id="@+id/btnContactAdd"-->
-    <!--        android:layout_width="108dp"-->
-    <!--        android:layout_height="68dp"-->
-    <!--        android:onClick="mOnContactAdd"-->
-    <!--        android:padding="5dp"-->
-    <!--        android:text="연락처 추가"-->
-    <!--        android:textSize="14dp" />-->
 
 </LinearLayout>

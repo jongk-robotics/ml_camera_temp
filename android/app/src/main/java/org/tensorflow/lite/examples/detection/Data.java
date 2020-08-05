@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 public class Data {
 
     private String name;
-    private String number;
+    private String time;
     private Bitmap profile;
     public Bitmap getProfile(){
         return profile;
@@ -22,12 +22,12 @@ public class Data {
         this.name = name;
     }
 
-    public String getNumber() {
-        return number;
+    public String getTime() {
+        return time;
     }
 
-    public void setNumber(String number) {
-        this.number =number;
+    public void setTime(String time) {
+        this.time = time;
     }
 
 
