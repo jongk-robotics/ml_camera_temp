@@ -190,6 +190,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
     private ImageButton mCaputuredBtn;
     private ListView mPlaceRecyclerView;
     private RecyclerView mFriendRecyclerView;
+    private ImageButton addFriendBtn;
 
     //recycler view adapter
     private ArrayAdapter<String> mPlaceRecyclerViewAdapter;
