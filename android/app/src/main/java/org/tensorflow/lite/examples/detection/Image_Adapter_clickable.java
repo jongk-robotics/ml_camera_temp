@@ -3,38 +3,35 @@ package org.tensorflow.lite.examples.detection;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
-import static android.content.Context.MODE_PRIVATE;
 
-
-public class Image_Adapter extends BaseAdapter {
+public class Image_Adapter_clickable extends BaseAdapter {
     private Context mContext;
-    ArrayList<Photo> photos = new ArrayList<Photo>();
-
-    Image_Adapter(Context c){
+    private ArrayList<Photo> photos;
+    Image_Adapter_clickable(Context c){
         mContext = c;
-//        thumbsDataList = new ArrayList<String>();
-//        thumbsIDList = new ArrayList<String>();
+        photos = new ArrayList<Photo>();
+
     }
 
+    public void setmContext(Context mContext) {
+        this.mContext = mContext;
+    }
+
+    public void setPhotos(ArrayList<Photo> photos) {
+        this.photos = photos;
+    }
 
     public boolean deleteSelected(int sIndex){
         return true;
@@ -54,18 +51,21 @@ public class Image_Adapter extends BaseAdapter {
     public void addItem(Photo photo) {
         photos.add(photo);
     }
+    public final void callImageViewer(int selectedIndex){
+        Intent i = new Intent(mContext, diary.class);
 
-    public void setPhotos(ArrayList<Photo> photos) {
-        this.photos = photos;
+        i.putExtra("Url", photos.get(selectedIndex).getUrl());
+        i.putExtra("Memo", photos.get(selectedIndex).getMemo());
+        mContext.startActivity(i);
+
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
+        ImageView imageView ;
         imageView = new ImageView(mContext);
-
-        Log.d("adapter", "url: " + photos.get(position).getUrl());
         Glide.with(mContext).load(photos.get(position).getUrl()).into(imageView);
 
         return imageView;
     }
+
 }

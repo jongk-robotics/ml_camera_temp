@@ -28,6 +28,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -93,6 +94,8 @@ public class MainActivity extends Activity {
         //여기서 fab add 버튼을 누르면 사람을 태깅할 수 있다
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         //핸드폰 화면 크기 구하기
         Display display = getWindowManager().getDefaultDisplay();

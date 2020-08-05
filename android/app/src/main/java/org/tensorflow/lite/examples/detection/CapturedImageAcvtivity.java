@@ -289,8 +289,10 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         setContentView(R.layout.activity_captured_image_acvtivity);
 
         //전체 화면 설정
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
+//                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         mCapturedImageView = findViewById(R.id.CapturedImageView);
         mCapturedTextView = findViewById(R.id.CapturedNames);
@@ -799,9 +801,9 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         TextView tvTitle = dialogLayout.findViewById(R.id.dlg_title);
         EditText etName = dialogLayout.findViewById(R.id.dlg_input);
 
-        tvTitle.setText("Add Face");
+        tvTitle.setText("누구의 얼굴인가요?");
         ivFace.setImageBitmap(rec.getCrop());
-        etName.setHint("Input name");
+        etName.setHint("이름을 입력해주세요");
 
         final String[] name = {""};
 
@@ -821,6 +823,14 @@ public class CapturedImageAcvtivity extends AppCompatActivity
                 dlg.dismiss();
             }
         });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dlg, int i) {
+
+                dlg.dismiss();
+            }
+        });
+
         builder.setView(dialogLayout);
         builder.show();
 

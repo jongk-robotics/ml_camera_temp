@@ -13,7 +13,7 @@
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <LinearLayout
-        android:id="@+id/gesture_layout"
+        android:id="@+id/gesture_layout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:text="diary"/>
     <TextView
+        android:id="@+id/diary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="---와 ---에서 함께한 추억"/>

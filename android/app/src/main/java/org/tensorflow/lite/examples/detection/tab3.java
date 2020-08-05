@@ -19,6 +19,8 @@ import java.util.ArrayList;
 public class tab3 extends AppCompatActivity {
 
     private ArrayList<Integer> imageList;
+    private ArrayList<String> placeList;
+
     private static final int DP = 24;
 
     ImageButton commuBtn;
@@ -40,7 +42,7 @@ public class tab3 extends AppCompatActivity {
         viewPager.setPadding(margin, 0, margin, 0);
         viewPager.setPageMargin(margin/2);
 
-        viewPager.setAdapter(new ViewPagerAdapter(this, imageList));
+        viewPager.setAdapter(new ViewPagerAdapter(this, imageList,placeList));
 
         commuBtn=(ImageButton)findViewById(R.id.gatherCommunity);
         scrapBtn=(ImageButton)findViewById(R.id.scrap);
@@ -62,12 +64,18 @@ public class tab3 extends AppCompatActivity {
     public void initializeData()
     {
         imageList = new ArrayList();
-
+        placeList = new ArrayList<>();
         imageList.add(R.drawable.iu2);
         imageList.add(R.drawable.iu4);
         imageList.add(R.drawable.iu5);
         imageList.add(R.drawable.iufullscreen);
         imageList.add(R.drawable.iutwo);
+        placeList.add("경주");
+        placeList.add("서울");
+        placeList.add("대전");
+        placeList.add("남양주");
+        placeList.add("텍사스");
+
     }
 
 }

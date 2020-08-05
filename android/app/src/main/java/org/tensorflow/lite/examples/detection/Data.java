@@ -6,12 +6,12 @@ public class Data {
 
     private String name;
     private String time;
-    private Bitmap profile;
-    public Bitmap getProfile(){
+    private String profile;
+    public String getProfile(){
         return profile;
     }
-    public void setProfile(Bitmap profile){
-        this.profile=profile;
+    public void setProfile(String uri){
+        this.profile=uri;
     }
 
     public String getName() {
