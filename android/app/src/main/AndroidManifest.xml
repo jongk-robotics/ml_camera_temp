@@ -35,19 +35,16 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".RegisterActivity"></activity>
-
+        <activity android:name=".CommuActivity"></activity>
         <activity android:name=".CapturedImageAcvtivity" />
         <activity
             android:name=".DetectorActivity"
             android:label="@string/tfe_od_app_name"
             android:screenOrientation="portrait">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
         </activity>
+
+        <activity android:name=".RegisterActivity"></activity>
+
         <activity android:name=".Tab_Activity"></activity>
         <activity android:name=".Friend_gallery"></activity>
         <activity android:name=".tab1"></activity>
