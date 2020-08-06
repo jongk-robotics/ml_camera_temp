@@ -11,8 +11,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.Timestamp;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 
@@ -54,8 +56,16 @@ public class Image_Adapter_clickable extends BaseAdapter {
     public final void callImageViewer(int selectedIndex){
         Intent i = new Intent(mContext, diary.class);
 
+        Timestamp timestamp = photos.get(selectedIndex).getTimeStamp();
+        SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
+        String date = s.format(timestamp.toDate());
+
         i.putExtra("Url", photos.get(selectedIndex).getUrl());
         i.putExtra("Memo", photos.get(selectedIndex).getMemo());
+        i.putExtra("LocationName", photos.get(selectedIndex).getLocationName());
+        i.putExtra("Friends", photos.get(selectedIndex).getFriends());
+        i.putExtra("Time", date);
+
         mContext.startActivity(i);
 
     }

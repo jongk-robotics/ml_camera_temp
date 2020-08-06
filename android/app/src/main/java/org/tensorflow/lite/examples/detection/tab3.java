@@ -3,6 +3,8 @@ package org.tensorflow.lite.examples.detection;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -36,7 +39,7 @@ public class tab3 extends AppCompatActivity {
 
     private static final int DP = 24;
 
-    ImageButton commuBtn;
+    ImageView commuBtn;
     ImageButton scrapBtn;
 
     private FirebaseFirestore mFireStoreRef = FirebaseFirestore.getInstance();
@@ -50,6 +53,8 @@ public class tab3 extends AppCompatActivity {
 
         this.initializeData();
 
+
+
         ViewPager viewPager = findViewById(R.id.viewPager);
         viewPager.setClipToPadding(false);
 
@@ -61,7 +66,9 @@ public class tab3 extends AppCompatActivity {
         viewPagerAdapter = new ViewPagerAdapter(this, imageList,placeList);
         viewPager.setAdapter(viewPagerAdapter);
 
-        commuBtn=(ImageButton)findViewById(R.id.gatherCommunity);
+        commuBtn=(ImageView)findViewById(R.id.gatherCommunity);
+        commuBtn.setColorFilter(Color.parseColor("#FFE91E63"), PorterDuff.Mode.SRC_IN);
+
         scrapBtn=(ImageButton)findViewById(R.id.scrap);
 
         downloadData();
@@ -118,6 +125,9 @@ public class tab3 extends AppCompatActivity {
 
     public void initializeData()
     {
+
+
+
         imageList = new ArrayList();
         placeList = new ArrayList<>();
 

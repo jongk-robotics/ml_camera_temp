@@ -74,22 +74,6 @@
             android:textSize="15sp"
             android:textColor="#FFFFFF"
             android:textStyle="bold"/>
-        <Button
-            android:id="@+id/button_decr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="- 10%"
-            app:layout_constraintStart_toStartOf="@+id/progress_bar"
-            app:layout_constraintTop_toBottomOf="@+id/progress_bar" />
-
-        <Button
-            android:id="@+id/button_incr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="+ 10%"
-            app:layout_constraintEnd_toEndOf="@+id/progress_bar"
-            app:layout_constraintTop_toBottomOf="@+id/progress_bar" />
-
 
     </LinearLayout>
 

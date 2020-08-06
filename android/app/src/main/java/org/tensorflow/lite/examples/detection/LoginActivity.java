@@ -101,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
 //                            Log.d("Login Success: ", user_ID);
                             Toast.makeText(LoginActivity.this,"Logged in Successfully.", Toast.LENGTH_SHORT).show();
                             loadUserData(fAuth.getCurrentUser().getEmail());
-                            startActivity(new Intent(getApplicationContext(),DetectorActivity.class));
+                            startActivity(new Intent(getApplicationContext(),checkpermission.class));
                         } else{
                             Toast.makeText(LoginActivity.this, "Error !"+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }

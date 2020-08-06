@@ -99,9 +99,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 //                }
 //            });
             final Integer[] progr = {0};
-            Button button_incr = itemView.findViewById(R.id.button_incr);
-            Button button_decr = itemView.findViewById(R.id.button_decr);
-//            final ProgressBar progressBar = itemView.findViewById(R.id.progress_bar);
+            ProgressBar progressBar = itemView.findViewById(R.id.progress_bar);
 
 
 
@@ -109,24 +107,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             //Integer Image_num = 디비에서 이미지 개수 가져오기, 여기서 한 번에 가져오는 방법 생각해야 할 듯?  ;
             //progress.setProgress(Image_num);
 
-//            button_incr.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (progr[0] <= 90) {
-//                        progr[0] += 10;
-//                        progressBar.setProgress(progr[0]);
-//                    }
-//                }
-//            });
-//            button_decr.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (progr[0] >= 10) {
-//                        progr[0] -= 10;
-//                        progressBar.setProgress(progr[0]);
-//                    }
-//                }
-//            });
 
 
         }
