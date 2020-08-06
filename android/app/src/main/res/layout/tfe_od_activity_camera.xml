@@ -36,6 +36,8 @@
             android:layout_alignParentTop="true"
             android:background="@color/tfe_semi_transparent">
 
+
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -44,15 +46,9 @@
 
         </androidx.appcompat.widget.Toolbar>
 
-        <FrameLayout
-            android:id="@+id/container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context="org.tensorflow.demo.CameraActivity">
-
-        </FrameLayout>
-
     </RelativeLayout>
+
+
 
 
 
@@ -68,7 +64,8 @@
         android:id="@+id/fab_switchcam"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="start|top"
+        android:layout_gravity="start"
+        android:layout_marginTop="400dp"
         android:tint="@android:color/white"
         android:src="@drawable/change"
         android:layout_margin="16dp"
@@ -77,7 +74,8 @@
         android:id="@+id/go_to_tab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end|center"
+        android:layout_gravity="end"
+        android:layout_marginTop="400dp"
         android:tint="@android:color/white"
         android:src="@drawable/home"
         android:layout_margin="16dp"
@@ -93,12 +91,18 @@
         android:layout_margin="16dp"
         />
 
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_anchor="@+id/relativeLayout"
+        app:layout_anchorGravity="center"
+        tools:context="org.tensorflow.demo.CameraActivity">
+
+    </FrameLayout>
 
 
-
-
-
-<!--    <View-->
+    <!--    <View-->
 <!--        android:id="@+id/dummy"-->
 <!--        android:layout_width="1dp"-->
 <!--        android:layout_height="80dp"-->

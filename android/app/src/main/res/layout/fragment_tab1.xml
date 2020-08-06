@@ -4,33 +4,30 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="일기"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:textColor="#95E11584"
-        android:layout_marginTop="20sp"
+        android:layout_height="200dp" >
 
-        >
-    </TextView>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20sp"
+        android:layout_marginTop="40sp">
 
-        >
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_image"
-        app:civ_border_width="2dp"
-        android:layout_width="130dp"
-        android:layout_height="130dp"
-        android:src="@drawable/profile2"
-        android:layout_marginLeft="20dp"
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_image"
+                app:civ_border_width="2dp"
+                app:civ_border_color="#505FE8"
+                android:elevation="10dp"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:src="@drawable/profile2"
+                android:layout_marginLeft="20dp" />
+        </FrameLayout>
 
-
-        />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,13 +35,13 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
+        android:textColor="#201d1d"
         android:text="name"
-        android:fontFamily="@font/font"
+        android:fontFamily="@font/segoeui"
         android:layout_marginTop="15dp"
         android:id="@+id/galley_name"
         android:textSize="25sp"
-        android:gravity="center_horizontal"
+        android:layout_marginLeft="30dp"
         android:textStyle="bold"
 
         />
@@ -54,7 +51,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="#FFFFFF"
                 android:fontFamily="@font/font"
-
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="20dp"
                 android:text="info"
                 android:id="@+id/galley_information"
                 android:textSize="13sp"
@@ -62,6 +60,7 @@
                 />
 
         </LinearLayout>
+    </LinearLayout>
     </LinearLayout>
     <GridView
         android:layout_marginTop="30dp"
