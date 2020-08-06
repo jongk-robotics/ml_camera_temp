@@ -1,5 +1,6 @@
 package org.tensorflow.lite.examples.detection;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -10,6 +11,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -18,12 +21,25 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+
 public class CommuActivity extends AppCompatActivity {
 
     private GridView mgridView;
     private SharedPreferences sp;
     private Image_Adapter ImageAdapter;
-
+    private FirebaseFirestore mFireStoreRef = FirebaseFirestore.getInstance();
+    private ArrayList<String> imageList;
+    private ArrayList<String> placeList;
+    private String TAG = "tab3";
+private ArrayList<Photo> photos;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +76,7 @@ public class CommuActivity extends AppCompatActivity {
         ImageAdapter.notifyDataSetChanged();
         mgridView.setAdapter(ImageAdapter);
         Button button = findViewById(R.id.back);
+        downloadData();
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,4 +90,45 @@ public class CommuActivity extends AppCompatActivity {
         super.finish();
 //        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_in_right);
     }
+    public void downloadData()
+    {
+        final CollectionReference imagesRef = mFireStoreRef.collection("Images");
+
+        imageList = new ArrayList<>();
+        placeList = new ArrayList<>();
+        photos = new ArrayList<>();
+        imagesRef
+                .whereEqualTo("isShared", true)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Photo photo = document.toObject(Photo.class);
+                                photos.add(photo);
+//                                imageList.add(photo.getUrl().toString());
+//                                placeList.add(photo.getLocationName().toString());
+                        } }else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ImageAdapter.setPhotos(photos);
+                                ImageAdapter.notifyDataSetChanged();
+                                Log.d(TAG, "items: " + ImageAdapter.getCount());
+                            }
+                        });
+
+
+                    }
+
+
+                });
+    }
+
+
+
+
 }

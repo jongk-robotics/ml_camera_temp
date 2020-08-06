@@ -65,9 +65,18 @@ public class Image_Adapter_clickable_add_profile extends BaseAdapter {
         return imageView;
     }
 
-    public final void callImageViewer(int selectedIndex){
+    public final void callImageViewer(int selectedIndex,int what){
+
         Intent i = new Intent(mContext, ImagePopup.class);
         String imgPath = getImageInfo(imgData, geoData, thumbsIDList.get(selectedIndex));
+        if (what==1){
+            i.putExtra("go", "friend");
+
+        }
+        else{
+            i.putExtra("go", "no friend");
+
+        }
         i.putExtra("filename", imgPath);
         Log.d("###############", imgPath); //    /storage/emulated/0/DCIM/100PINT/핀/f26901252678a142ff4d0c15fddecbc8.jpg
         mContext.startActivity(i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));

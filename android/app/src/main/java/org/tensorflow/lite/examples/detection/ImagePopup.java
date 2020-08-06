@@ -56,11 +56,21 @@ public class ImagePopup extends Activity implements View.OnClickListener {
                 Bundle extras = i.getExtras();
                 String imgPath = extras.getString("filename");
                 Log.d("filename",imgPath);
-                Intent intent = new Intent(ImagePopup.this, Add_profile.class);
-                intent.putExtra("filepath",imgPath);
+                String what = extras.getString("go");
+                if (what.equals("friend")){
+                    Intent intent = new Intent(ImagePopup.this, Add_friend.class);
+                    intent.putExtra("filepath",imgPath);
 
-                startActivity(intent);
+                    startActivity(intent);
 
+                }
+                else {
+                    Intent intent = new Intent(ImagePopup.this, Add_profile.class);
+                    intent.putExtra("filepath",imgPath);
+
+                    startActivity(intent);
+
+                }
                 this.finish();
                 break;
         }

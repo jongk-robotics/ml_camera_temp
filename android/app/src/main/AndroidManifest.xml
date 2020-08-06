@@ -34,8 +34,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".CommuActivity"
-            android:theme="@style/Theme.AppCompat"></activity>
+        <activity android:name=".CommuActivity"></activity>
         <activity android:name=".CapturedImageAcvtivity" />
         <activity
             android:name=".DetectorActivity"
@@ -54,6 +53,7 @@
         <activity android:name=".Add_profile"></activity>
         <activity android:name=".ImagePopup"></activity>
         <activity android:name=".checkpermission"></activity>
+        <activity android:name=".Add_friend"></activity>
 
     </application>
 

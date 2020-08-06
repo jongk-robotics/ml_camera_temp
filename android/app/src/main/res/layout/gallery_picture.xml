@@ -10,7 +10,17 @@
     android:layout_height="wrap_content"
     android:id="@+id/galley_picture"
     />
+<com.google.android.material.floatingactionbutton.FloatingActionButton
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|end"
+    android:layout_marginRight="15dp"
+    android:layout_marginBottom="15dp"
+    android:src="@drawable/plus"
+    android:id="@+id/Add_community"
+    android:visibility="gone"
 
+    />
     <include
         android:id="@+id/bottom_diary_sheet"
         layout="@layout/bottom_diary_sheet" />

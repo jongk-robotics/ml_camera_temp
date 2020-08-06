@@ -19,7 +19,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#DD000000">
+    android:background="#000000">
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
@@ -44,11 +44,16 @@
 
         </androidx.appcompat.widget.Toolbar>
 
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="org.tensorflow.demo.CameraActivity">
+
+        </FrameLayout>
+
     </RelativeLayout>
 
-    <include
-        android:id="@+id/bottom_sheet_layout"
-        layout="@layout/tfe_od_layout_bottom_sheet" />
 
 
     <ImageView
@@ -65,7 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start|top"
         android:tint="@android:color/white"
-        android:src="@drawable/ic_baseline_switch_camera_24"
+        android:src="@drawable/change"
         android:layout_margin="16dp"
         />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -74,7 +79,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|center"
         android:tint="@android:color/white"
-        android:src="@drawable/ic_baseline_switch_camera_24"
+        android:src="@drawable/home"
         android:layout_margin="16dp"
         />
 
@@ -84,22 +89,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
         android:tint="@android:color/white"
-        android:src="@drawable/ic_baseline_switch_camera_24"
+        android:src="@drawable/camera"
         android:layout_margin="16dp"
         />
 
 
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|top"
-        android:tint="@android:color/white"
-        android:src="@android:drawable/ic_input_add"
-        android:layout_margin="16dp"
-        />
 
 
 <!--    <View-->
@@ -118,27 +114,6 @@
 <!--        app:layout_anchorGravity="bottom|center"-->
 <!--        app:layout_anchor="@id/dummy" />-->
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_search_category_default"
-            android:tint="@android:color/white"
-            android:layout_margin="16dp"
-
-            app:layout_anchor="@id/bottom_sheet_layout"
-            app:layout_anchorGravity="top|end"
-            />
-
-    <FrameLayout
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_anchor="@+id/relativeLayout"
-        app:layout_anchorGravity="center"
-        tools:context="org.tensorflow.demo.CameraActivity">
-
-    </FrameLayout>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

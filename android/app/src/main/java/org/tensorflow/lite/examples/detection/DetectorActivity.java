@@ -175,21 +175,19 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     mDpWidth = size.x;
     mDpHeight = size.y;
 
-    fabAdd = findViewById(R.id.fab_add);
-    fabAdd.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        onAddClick();
-      }
-    });
-
-    fabSearch = findViewById(R.id.fab_search);
-    fabSearch.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-
-      }
-    });
+//    fabAdd.setOnClickListener(new View.OnClickListener() {
+//      @Override
+//      public void onClick(View view) {
+//        onAddClick();
+//      }
+//    });
+//
+//    fabSearch.setOnClickListener(new View.OnClickListener() {
+//      @Override
+//      public void onClick(View view) {
+//
+//      }
+//    });
 
     // Real-time contour detection of multiple faces
     FaceDetectorOptions options =

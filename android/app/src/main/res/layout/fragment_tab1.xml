@@ -4,18 +4,30 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="일기"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="#95E11584"
+        android:layout_marginTop="20sp"
+
+        >
+    </TextView>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50sp"
+        android:layout_marginTop="20sp"
+
         >
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image"
         app:civ_border_width="2dp"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
         android:src="@drawable/profile2"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="20dp"
 
 
         />
@@ -31,13 +43,13 @@
         android:fontFamily="@font/font"
         android:layout_marginTop="15dp"
         android:id="@+id/galley_name"
-        android:textSize="15sp"
+        android:textSize="25sp"
         android:gravity="center_horizontal"
         android:textStyle="bold"
 
         />
             <TextView
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#FFFFFF"

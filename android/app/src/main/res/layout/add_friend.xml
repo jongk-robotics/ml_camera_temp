@@ -16,7 +16,7 @@
         />
 
     <GridView
-        android:id="@+id/Add_profile_gridview"
+        android:id="@+id/Add_friend_gridview"
         android:layout_width="match_parent"
         android:layout_height="355dp"
         android:numColumns="3"
@@ -34,26 +34,12 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/Add_profile_edittext1"
-        />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="profile"
-        android:textColor="#8AFFFFFF"
-        android:textStyle="bold"
-
-        />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/Add_profile_edittext2"
+        android:id="@+id/Add_friend_name"
         />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="change"
-        android:id="@+id/btn_profile_change"/>
+        android:id="@+id/btn_friend_change"/>
 
 </LinearLayout>
