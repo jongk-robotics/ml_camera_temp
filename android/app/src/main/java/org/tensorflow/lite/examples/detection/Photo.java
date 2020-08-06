@@ -20,23 +20,11 @@ public class Photo {
 
     private boolean isLiked = false;
     private boolean isShared = false;
+    private boolean isPeople = false;
 
     Photo()
     {
 
-    }
-
-    Photo(Map<String, Object> map)
-    {
-        url = (String) map.get("url");
-        userEmail = (String) map.get("userEmail");
-        timeStamp = (Timestamp) map.get("timeStamp");
-        locationName = (String) map.get("locationName");
-        memo = (String) map.get("memo");
-        friends = (ArrayList<String>) map.get("friends");
-        location = (GeoPoint) map.get("location");
-        isLiked = (boolean) map.get("isLiked");
-        isShared = (boolean) map.get("isShared");
     }
 
 
@@ -81,6 +69,10 @@ public class Photo {
         isShared = shared;
     }
 
+    public void setPeople(boolean people) {
+        isPeople = people;
+    }
+
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
@@ -113,6 +105,11 @@ public class Photo {
         return userEmail;
     }
 
+    public boolean getPeolple()
+    {
+        return isPeople;
+    }
+
     public HashMap<String, Object> toMap(){
         HashMap<String, Object> result=new HashMap<>();
         result.put("url", url);
@@ -124,6 +121,7 @@ public class Photo {
         result.put("memo", memo);
         result.put("isLiked", isLiked);
         result.put("isShared", isShared);
+        result.put("isPeople", isPeople);
 
         return result;
     }

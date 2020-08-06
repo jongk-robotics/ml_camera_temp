@@ -40,6 +40,9 @@ public class PlaceNameRequest implements PlacesListener {
 
     private int searchRadius;
 
+    //gps
+    private GpsTracker gpsTracker;
+
     PlaceNameRequest(String key, processLocation process, CollectionReference colRef, int searchRadius)
     {
         API_KEY = key;

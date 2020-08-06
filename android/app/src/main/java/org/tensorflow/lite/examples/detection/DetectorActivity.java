@@ -408,7 +408,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   class SaveImageInBack extends AsyncTask<Void, Void, Uri>
   {
-    private ProgressDialog asyncDialog = new ProgressDialog(mActivity);
+    private UploadWaiting asyncDialog = new UploadWaiting(mActivity);
     private Bitmap bitmap;
     private ArrayList<String> nameList;
     private int previewWidth;
@@ -427,14 +427,25 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
     @Override
     protected void onPreExecute() {
-      asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-      asyncDialog.setMessage("이미지를 처리중입니다...");
-      asyncDialog.show();
+      runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          asyncDialog = new UploadWaiting(mActivity);
+          asyncDialog.showDialog();
+        }
+      });
+
     }
 
     @Override
     protected void onPostExecute(Uri uri) {
-      asyncDialog.dismiss();
+      runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          asyncDialog.dismiss();
+        }
+      });
+
 
       Intent intent = new Intent(mActivity, CapturedImageAcvtivity.class);
       intent.putExtra("imageUri", uri);
