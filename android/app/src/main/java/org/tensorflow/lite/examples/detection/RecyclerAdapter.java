@@ -12,12 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-<<<<<<< HEAD
-=======
 import com.bumptech.glide.Glide;
 
-import java.io.InputStream;
->>>>>>> GW
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -139,7 +135,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 //            button = itemView.findViewById(R.id.PHONEBUTTON);
 
             //uri-> glide
-            Glide.with().load(data.getProfile()).into(profile_view);
+//            Glide.with().load(data.getProfile()).into(profile_view);
         }
 
     }
