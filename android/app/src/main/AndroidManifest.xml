@@ -50,6 +50,9 @@
         <activity android:name=".tab2"></activity>
         <activity android:name=".tab3"></activity>
         <activity android:name=".diary"></activity>
+        <activity android:name=".Add_profile"></activity>
+        <activity android:name=".ImagePopup"></activity>
+        <activity android:name=".checkpermission"></activity>
 
     </application>
 

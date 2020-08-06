@@ -54,22 +54,23 @@ public class tab2 extends AppCompatActivity {
             // 각 값이 들어간 data를 adapter에 추가합니다.
             adapter.addItem(data);
         }
-        Bitmap bm =BitmapFactory.decodeResource(getResources(), R.drawable.profile);
-
-        Data data = new Data();
-        data.setName("종서");
-        data.setTime("4일전");
-        data.setProfile(bm);
-        Data data2 = new Data();
-        data2.setName("승현");
-        data2.setTime("3시간전");
-
-        data2.setProfile(bm);
-
-        // 각 값이 들어간 data를 adapter에 추가합니다.
-        adapter.addItem(data);
-        adapter.addItem(data2);
-        // adapter의 값이 변경되었다는 것을 알려줍니다.
         adapter.notifyDataSetChanged();
+//        Bitmap bm =BitmapFactory.decodeResource(getResources(), R.drawable.profile);
+
+//        Data data = new Data();
+//        data.setName("종서");
+//        data.setTime("4일전");
+//        data.setProfile(bm);
+//        Data data2 = new Data();
+//        data2.setName("승현");
+//        data2.setTime("3시간전");
+//
+//        data2.setProfile(bm);
+//
+//        // 각 값이 들어간 data를 adapter에 추가합니다.
+//        adapter.addItem(data);
+//        adapter.addItem(data2);
+        // adapter의 값이 변경되었다는 것을 알려줍니다.
+//        adapter.notifyDataSetChanged();
     }
 }

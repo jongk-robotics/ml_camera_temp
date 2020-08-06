@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 public class diary extends AppCompatActivity {
@@ -24,23 +25,37 @@ public class diary extends AppCompatActivity {
 
 
     protected void onCreate(Bundle savedInstanceState) {
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gallery_picture);
+
         bottomSheetLayout = findViewById(R.id.bottom_diary_sheet);
         gestureLayout = findViewById(R.id.gesture_layout2);
         sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
         bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
 
         ImageView imageView = (ImageView) findViewById(R.id.galley_picture);
-        TextView textView = findViewById(R.id.diary);
+        TextView Diary = findViewById(R.id.diary);
+        TextView textView = findViewById(R.id.diary2);
         Bundle extras = getIntent().getExtras();
-        byte[] byteArray = getIntent().getByteArrayExtra("Url");
+        String urL = getIntent().getStringExtra("Url");
         String diary = getIntent().getStringExtra("Memo");
-        Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-        imageView.setImageBitmap(bitmap);
-        textView.setText(diary);
+        String LocationName = getIntent().getStringExtra("LocationName");
+        String Friends = getIntent().getStringExtra("Friends");
+        String time = getIntent().getStringExtra("Time");
+        Glide.with(this).load(urL).into(imageView);
+
+        if(Friends != null) {
+            //사람이 여러명일 경우, 자기 자신이 포함된 경우도 생각을 해줘야함!
+            Diary.setText(Friends + "와 " + LocationName + "에서 함께한 추억");
+            textView.setText(diary);
+        }
+        else{
+            Diary.setText(time+"의 "+LocationName + "에서의 추억");
+            textView.setText(diary);
+
+        }
+
+
         ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {

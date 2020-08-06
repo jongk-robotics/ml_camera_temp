@@ -3,12 +3,15 @@ package org.tensorflow.lite.examples.detection;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -23,7 +26,7 @@ public class tab3 extends AppCompatActivity {
 
     private static final int DP = 24;
 
-    ImageButton commuBtn;
+    ImageView commuBtn;
     ImageButton scrapBtn;
 
 
@@ -33,6 +36,8 @@ public class tab3 extends AppCompatActivity {
         setContentView(R.layout.fragment_tab3);
 
         this.initializeData();
+
+
 
         ViewPager viewPager = findViewById(R.id.viewPager);
         viewPager.setClipToPadding(false);
@@ -44,7 +49,9 @@ public class tab3 extends AppCompatActivity {
 
         viewPager.setAdapter(new ViewPagerAdapter(this, imageList,placeList));
 
-        commuBtn=(ImageButton)findViewById(R.id.gatherCommunity);
+        commuBtn=(ImageView)findViewById(R.id.gatherCommunity);
+        commuBtn.setColorFilter(Color.parseColor("#FFE91E63"), PorterDuff.Mode.SRC_IN);
+
         scrapBtn=(ImageButton)findViewById(R.id.scrap);
 
         commuBtn.setOnClickListener(new View.OnClickListener(){
@@ -63,6 +70,9 @@ public class tab3 extends AppCompatActivity {
 
     public void initializeData()
     {
+
+
+
         imageList = new ArrayList();
         placeList = new ArrayList<>();
         imageList.add(R.drawable.iu2);

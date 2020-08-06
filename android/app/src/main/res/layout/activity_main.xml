@@ -7,7 +7,7 @@ android:layout_height="match_parent"
 android:orientation="vertical"
 android:id="@android:id/tabhost"
 tools:context=".Tab_Activity"
-    android:background="#E2000000">
+    android:background="#262626">
 
 <LinearLayout
     android:layout_width="match_parent"
