@@ -48,11 +48,11 @@ public class RegisterActivity extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
         progressBar = findViewById(R.id.my_progress_bar2);
 
-        if(fAuth.getCurrentUser() != null){ // -> 이미 가입된 사용자는 그대로 메인으로 보내는 (?)
-            startActivity(new Intent(getApplicationContext(), CapturedImageAcvtivity.class));
-            finish();
-        }
-
+//        if(fAuth.getCurrentUser() != null){ // -> 이미 가입된 사용자는 그대로 메인으로 보내는 (?)
+//            startActivity(new Intent(getApplicationContext(), CapturedImageAcvtivity.class));
+//            finish();
+//        }
+//
         Button register = (Button) findViewById(R.id.registerButton);
         register.setOnClickListener(new View.OnClickListener() {
             @Override

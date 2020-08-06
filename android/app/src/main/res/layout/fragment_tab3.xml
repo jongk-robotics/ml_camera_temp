@@ -6,6 +6,16 @@
     tools:context=".tab3"
     android:id="@+id/Tab3">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Community"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="#95E11584"
+        android:layout_marginTop="20sp"
+
+        ></TextView>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"

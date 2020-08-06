@@ -7,16 +7,16 @@
     android:orientation="vertical"
     android:gravity="center"
     tools:context=".LoginActivity"
-    android:background="#262626"
+    android:background="#000000"
     >
-
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="0dp"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
         <ImageView
 
@@ -31,40 +31,49 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:text="Email"
-            android:textColor="#FFE91E63"
+            android:textColor="#95E11584"
             android:textSize="15dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="@font/font"/>
+
 
         <EditText
             android:id="@+id/userEmail"
             android:layout_width="300dp"
             android:layout_height="50dp"
-            android:backgroundTint="#000"
+            android:background="@drawable/ovalrect"
             android:ems="10"
-            android:hint=""
+            android:hint="이메일을 입력해주세요"
             android:inputType="text"
-            android:textColor="#FFE91E63"
+            android:textColor="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/Title" />
+            app:layout_constraintTop_toBottomOf="@id/Title"
+            android:padding="10dp"
+            />
 
         <TextView
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="Password"
-            android:textColor="#FFE91E63"
+            android:textColor="#95E11584"
             android:textSize="15dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="@font/font"/>
 
         <EditText
             android:id="@+id/password"
             android:layout_width="300dp"
             android:layout_height="50dp"
-            android:backgroundTint="#000"
             android:ems="10"
+            android:background="@drawable/ovalrect"
+            android:hint="비밀번호를 입력해주세요"
             android:inputType="textPassword"
-            android:textColor="#000" />
+            android:textColor="#FFFFFF"
+            android:padding="10dp"
+
+            />
 
         <Button
             android:id="@+id/loginButton"
@@ -73,13 +82,16 @@
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="Login"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:background="@drawable/button_background"
+            android:fontFamily="@font/font"/>
 
         <LinearLayout
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
             <TextView
                 android:layout_width="200dp"
@@ -87,7 +99,8 @@
                 android:layout_marginTop="10dp"
                 android:text="You don't have an account? "
                 android:textColor="#000"
-                android:textSize="16dp" />
+                android:textSize="16dp"
+                android:fontFamily="@font/font"/>
 
             <TextView
                 android:id="@+id/signup"
@@ -96,9 +109,12 @@
                 android:layout_marginTop="10dp"
                 android:clickable="true"
                 android:text="SIGN UP "
-                android:textColor="#FFE91E63"
+                android:textColor="#95E11584"
                 android:textSize="16dp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:fontFamily="@font/font"
+
+                />
 
             <ProgressBar
                 android:id="@+id/my_progress_bar"
@@ -109,5 +125,4 @@
                 android:visibility="invisible" />
         </LinearLayout>
     </LinearLayout>
-
 </LinearLayout>

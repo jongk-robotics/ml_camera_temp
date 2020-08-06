@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -37,7 +38,7 @@ import java.util.ArrayList;
 public class tab2 extends AppCompatActivity {
 
     private String TAG = "tab1";
-
+    private FloatingActionButton btn_add_friend;
 
     FirebaseFirestore db=FirebaseFirestore.getInstance();
     //firebase
@@ -75,6 +76,18 @@ public class tab2 extends AppCompatActivity {
                 .collection("Friend");
 
         ArrayList<Data> dataList = new ArrayList<>();
+
+
+        btn_add_friend = findViewById(R.id.Add_friend);
+        btn_add_friend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(),Add_friend.class);
+                startActivity(intent);
+            }
+        });
+
+
 
         collRef
                 .get()

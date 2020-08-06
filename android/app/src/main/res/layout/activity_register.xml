@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".RegisterActivity"
-    android:background="#262626"
+    android:background="#000000"
     >
 
     <LinearLayout
@@ -21,7 +21,7 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:text="Sign Up"
-            android:textColor="#FFE91E63"
+            android:textColor="#95E11584"
             android:textSize="40dp"
             android:layout_marginTop="50dp"
             />
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:textSize="15dp"
-            android:textColor="#FFE91E63"
+            android:textColor="#95E11584"
             android:textStyle="bold"
             android:text="Full Name"
             />
@@ -43,16 +43,18 @@
             android:layout_height="50dp"
             android:ems="10"
             android:hint=""
-            android:backgroundTint="#000"
             android:textColor="#000"
-            android:inputType="text" />
+            android:inputType="text"
+            android:background="@drawable/ovalrect"
+
+            />
 
         <TextView
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textSize="15dp"
-            android:textColor="#FFE91E63"
+            android:textColor="#95E11584"
             android:textStyle="bold"
             android:text="Email" />
 
@@ -60,17 +62,19 @@
             android:id="@+id/emailET"
             android:layout_width="300dp"
             android:layout_height="50dp"
-            android:backgroundTint="#000"
             android:ems="10"
             android:inputType="text|textEmailAddress"
-            android:textColor="#000" />
+            android:textColor="#000"
+            android:background="@drawable/ovalrect"
+
+            />
 
         <TextView
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textSize="15dp"
-            android:textColor="#FFE91E63"
+            android:textColor="#95E11584"
             android:textStyle="bold"
             android:text="Password" />
 
@@ -78,17 +82,19 @@
             android:id="@+id/pwET"
             android:layout_width="300dp"
             android:layout_height="50dp"
-            android:backgroundTint="#000"
             android:ems="10"
             android:inputType="none|textPassword"
-            android:textColor="#000" />
+            android:textColor="#000"
+            android:background="@drawable/ovalrect"
+
+            />
 
         <TextView
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textSize="15dp"
-            android:textColor="#FFE91E63"
+            android:textColor="#95E11584"
             android:textStyle="bold"
             android:text="Phone Number" />
 
@@ -96,20 +102,22 @@
             android:id="@+id/phoneET"
             android:layout_width="300dp"
             android:layout_height="50dp"
-            android:backgroundTint="#000"
             android:ems="10"
             android:inputType="number|phone"
-            android:textColor="#000" />
+            android:textColor="#000"
+            android:background="@drawable/ovalrect"
+            />
 
         <Button
             android:id="@+id/registerButton"
             android:layout_width="300dp"
             android:layout_height="60dp"
             android:layout_marginTop="30dp"
+            android:background="@drawable/button_background"
             android:text="Sign Up"
             android:textSize="20dp"
             android:gravity="center"
-            android:textColor="#FFE91E63" />
+            android:textColor="#000000" />
 
         <ProgressBar
             android:id="@+id/my_progress_bar2"

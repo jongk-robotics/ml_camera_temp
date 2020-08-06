@@ -7,10 +7,24 @@
     android:orientation="vertical"
     tools:context=".tab2"
     android:id="@+id/Tab2"
-    android:layout_marginTop="20dp"
 
     >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="친구"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="#95E11584"
+        android:layout_marginTop="20sp"
 
+        ></TextView>
+
+    <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+        android:layout_marginTop="20sp"
+        >
     <!-- TODO: Update blank fragment layout -->
 
     <!--    <Button-->
@@ -21,9 +35,19 @@
     <!--        android:padding="5dp"-->
     <!--        android:text="연락처 추가"-->
     <!--        android:textSize="14dp" />-->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="370dp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="684dp" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="15dp"
+        android:src="@drawable/plus"
+        android:id="@+id/Add_friend"
+        />
+</FrameLayout>
 </LinearLayout>

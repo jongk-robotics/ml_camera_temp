@@ -1,22 +1,16 @@
 package org.tensorflow.lite.examples.detection;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.Continuation;
@@ -24,13 +18,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -43,9 +33,11 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 
-public class Add_profile extends AppCompatActivity {
+public class Add_friend extends AppCompatActivity {
+
+
+
     private StorageReference mStorageRef = FirebaseStorage.getInstance().getReference("Images");
     FirebaseAuth fAuth = FirebaseAuth.getInstance();
     // get current user info
@@ -53,15 +45,10 @@ public class Add_profile extends AppCompatActivity {
 
     private final FirebaseUser user = fAuth.getCurrentUser();
 
-    private final String TAG = "Add_profile";
-    //firestore
-
-    @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_profile);
-        GridView mgridView = (GridView) findViewById(R.id.Add_profile_gridview);
+        setContentView(R.layout.add_friend);
+        GridView mgridView = (GridView) findViewById(R.id.Add_friend_gridview);
         final Image_Adapter_clickable_add_profile ia = new Image_Adapter_clickable_add_profile(this);
         mgridView.setAdapter(ia);
         mgridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -71,11 +58,8 @@ public class Add_profile extends AppCompatActivity {
             }
         });
 
-        EditText editName = findViewById(R.id.Add_profile_edittext1);
-        EditText editProfile = findViewById(R.id.Add_profile_edittext2);
-        Button btn = findViewById(R.id.btn_profile_change);
-
-
+        EditText editName = findViewById(R.id.Add_friend_name);
+        Button btn = findViewById(R.id.btn_friend_change);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,11 +69,10 @@ public class Add_profile extends AppCompatActivity {
                 Uri uri= Uri.parse(imgPath);
 
                 String name = editName.getText().toString();
-                String message = editProfile.getText().toString();
 
 
                 //여기서 디비에 전달
-                uploadImage(uri, name, message);
+                uploadImage(uri, name);
 //                Intent intent = new Intent(getApplicationContext(),tab1.class);
 //
 //                startActivity(intent);
@@ -97,15 +80,17 @@ public class Add_profile extends AppCompatActivity {
             }
         });
 
+
+
     }
-    void uploadImage(Uri uri, String name, String message)
+
+    void uploadImage(Uri uri, String name)
     {
         //이미지 저장
         SimpleDateFormat s = new SimpleDateFormat("ddMMyyyyhhmmss");
         String format = s.format(new Date());
         String fileName = "image_" + format + ".jpg";
 
-        Log.d(TAG, "uri: " + uri);
 
         InputStream stream = null;
 
@@ -140,7 +125,7 @@ public class Add_profile extends AppCompatActivity {
                 if(task.isSuccessful()){
                     Uri downloadUri = task.getResult();
                     String imageUrl = String.valueOf(downloadUri);
-                    uploadData(downloadUri, name, message);
+                    uploadData(downloadUri, name);
                 }else{
 
                 }
@@ -160,7 +145,7 @@ public class Add_profile extends AppCompatActivity {
     }
 
 
-    void uploadData(Uri imgOfUrl, String name, String message)
+    void uploadData(Uri imgOfUrl, String name)
     {
         String userEmail = user.getEmail();
 
@@ -168,7 +153,6 @@ public class Add_profile extends AppCompatActivity {
         HashMap<String, Object> data = new HashMap<>();
         data.put("profileUrl", imgOfUrl.toString());
         data.put("name", name);
-        data.put("message", message);
 
         mFireStoreRef.collection("Users")
                 .document(userEmail)
@@ -176,26 +160,18 @@ public class Add_profile extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                        Log.d("Success", "DocumentSnapshot successfully updated!");
                     }
                 }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error updating document", e);
-                    }
-                });
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w("Failure", "Error updating document", e);
+            }
+        });
+
+
 
 
 
     }
-
-
-
-
-
-
-
-
-
-
 }
