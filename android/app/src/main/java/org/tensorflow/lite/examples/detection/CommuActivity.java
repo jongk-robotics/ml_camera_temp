@@ -20,6 +20,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -84,7 +85,7 @@ public class CommuActivity extends AppCompatActivity {
         ImageAdapter.setPhotos(liked);
         mgridView.setAdapter(ImageAdapter);
 
-        Button button = findViewById(R.id.back);
+        ImageButton button = findViewById(R.id.back);
 //        downloadData();
         button.setOnClickListener(new View.OnClickListener() {
             @Override

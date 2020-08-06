@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#fff">
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,16 +40,19 @@
         android:layout_marginTop="20dp"
         android:id="@+id/Add_friend_gridview"
         android:layout_width="match_parent"
-        android:layout_height="355dp"
-        android:numColumns="3"></GridView>
-<!--    <TextView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="name"-->
-<!--        android:textColor="#8AFFFFFF"-->
-<!--        android:textStyle="bold"-->
+        android:layout_height="442dp"
+        android:numColumns="3"
 
-<!--        />-->
+        ></GridView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="name"
+        android:textColor="#8AFFFFFF"
+        android:textStyle="bold"
+
+        />
 
     <EditText
         android:backgroundTint="#505FE8"
@@ -58,15 +61,18 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:id="@+id/Add_friend_name"
-        android:hint="Name" />
+        android:hint="이름을 입력해주세요"
+        android:textColor="#8AFFFFFF"
+        />
+
     <Button
-        android:layout_marginTop="40dp"
-        android:layout_gravity="center"
-        android:background="@drawable/circle_outline"
+        android:id="@+id/btn_friend_change"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:text="add"
-        android:textColor="#FFF"
-        android:id="@+id/btn_friend_change"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:text="change" />
 
 </LinearLayout>

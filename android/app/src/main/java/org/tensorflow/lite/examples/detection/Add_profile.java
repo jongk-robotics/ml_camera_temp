@@ -66,7 +66,7 @@ public class Add_profile extends AppCompatActivity {
         mgridView.setAdapter(ia);
         mgridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView parent, View v, int position, long id){
-                ia.callImageViewer(position,1);
+                ia.callImageViewer(position,0);
                 finish();
             }
         });

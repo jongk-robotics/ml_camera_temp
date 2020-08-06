@@ -80,7 +80,6 @@ public class Friend_gallery extends AppCompatActivity {
         progressBar.setProgress(count);
         ImageAdapter = new Image_Adapter_clickable(this);
         gridView.setAdapter(ImageAdapter);
-
         downLoadPhoto();
 
 //        downLoadPhoto();

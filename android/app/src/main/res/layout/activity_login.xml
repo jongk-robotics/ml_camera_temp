@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:gravity="center"
     tools:context=".LoginActivity"
-    android:background="#000000"
+    android:background="#FFFFFF"
     >
 
     <LinearLayout
@@ -21,21 +21,21 @@
         <ImageView
 
             android:id="@+id/Title"
-            android:layout_width="197dp"
-            android:layout_height="162dp"
+            android:layout_width="265dp"
+            android:layout_height="201dp"
             android:layout_gravity="center"
-            android:layout_marginTop="50dp" />
+            android:layout_marginTop="50dp"
+            android:src="@drawable/eye2" />
 
         <TextView
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-
             android:text="Email"
-            android:textColor="#95E11584"
+            android:textColor="#57000000"
             android:textSize="15dp"
             android:textStyle="bold"
-            android:fontFamily="@font/font"/>
+            android:fontFamily="@font/font"
+            />
 
 
         <EditText
@@ -46,11 +46,12 @@
             android:ems="10"
             android:hint="이메일을 입력해주세요"
             android:inputType="text"
-            android:textColor="#FFFFFF"
+            android:textColor="#000000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/Title"
             android:padding="10dp"
+
             />
 
         <TextView
@@ -58,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="Password"
-            android:textColor="#95E11584"
+            android:textColor="#57000000"
             android:textSize="15dp"
             android:textStyle="bold"
             android:fontFamily="@font/font"/>
@@ -71,7 +72,7 @@
             android:background="@drawable/ovalrect"
             android:hint="비밀번호를 입력해주세요"
             android:inputType="textPassword"
-            android:textColor="#FFFFFF"
+            android:textColor="#000000"
             android:padding="10dp"
 
             />
@@ -83,47 +84,30 @@
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="Login"
+            android:textColor="#FFFFFF"
             android:textSize="20dp"
             android:background="@drawable/button_background"
-            android:fontFamily="@font/font"/>
+            android:fontFamily="@font/font"
+            android:elevation="200dp"
 
-        <LinearLayout
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:orientation="horizontal"
-            >
+            />
 
-            <TextView
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="You don't have an account? "
-                android:textColor="#000"
-                android:textSize="16dp"
-                android:fontFamily="@font/font"/>
+
 
             <TextView
                 android:id="@+id/signup"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
                 android:clickable="true"
+                android:fontFamily="@font/font"
+                android:gravity="center"
                 android:text="SIGN UP "
-                android:textColor="#95E11584"
+                android:textColor="#000000"
                 android:textSize="16dp"
                 android:textStyle="bold"
-                android:fontFamily="@font/font"
-
+                android:layout_marginTop="10dp"
                 />
 
-            <ProgressBar
-                android:id="@+id/my_progress_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="150dp"
-                android:visibility="invisible" />
-        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

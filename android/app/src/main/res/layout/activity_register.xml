@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".RegisterActivity"
-    android:background="#000000"
+    android:background="#FFFFFF"
     >
 
     <LinearLayout
@@ -21,7 +21,7 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:text="Sign Up"
-            android:textColor="#95E11584"
+            android:textColor="#505FE8"
             android:textSize="40dp"
             android:layout_marginTop="50dp"
             />
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:textSize="15dp"
-            android:textColor="#95E11584"
+            android:textColor="#57000000"
             android:textStyle="bold"
             android:text="Full Name"
             />
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textSize="15dp"
-            android:textColor="#95E11584"
+            android:textColor="#57000000"
             android:textStyle="bold"
             android:text="Email" />
 
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textSize="15dp"
-            android:textColor="#95E11584"
+            android:textColor="#57000000"
             android:textStyle="bold"
             android:text="Password" />
 
@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textSize="15dp"
-            android:textColor="#95E11584"
+            android:textColor="#57000000"
             android:textStyle="bold"
             android:text="Phone Number" />
 
@@ -117,7 +117,10 @@
             android:text="Sign Up"
             android:textSize="20dp"
             android:gravity="center"
-            android:textColor="#000000" />
+            android:textColor="#FFFFFF"
+            android:elevation="10dp"
+
+            />
 
         <ProgressBar
             android:id="@+id/my_progress_bar2"

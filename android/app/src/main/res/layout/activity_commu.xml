@@ -5,42 +5,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="org.tensorflow.lite.examples.detection.CommuActivity"
-    android:background="#E2000000">
+    android:background="#FFFFFF"
+    android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-        <TextView
-            android:id="@+id/timestamp1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:includeFontPadding="false"
-            android:layout_marginTop="10dp"
-            android:text="Look"
-            android:textColor="#FFE91E63"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/font"/>
-        <TextView
-            android:id="@+id/timestamp2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:includeFontPadding="false"
-            android:text="At Me"
-            android:textColor="#FFE91E63"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/font"/>
-
-        <Button
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageButton
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
             android:background="@drawable/back"
             android:id="@+id/back"
-            />
+            ></ImageButton>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Community"
+            android:gravity="center"
+            android:layout_marginRight="25dp"
+            android:textStyle="bold"
+            android:textColor="#505FE8"
+            android:layout_marginTop="20sp"
+
+            >
+        </TextView>
+    </LinearLayout>
     <GridView
         android:layout_marginTop="20sp"
         android:layout_width="match_parent"
@@ -54,5 +45,4 @@
         android:gravity="center"
         android:id="@+id/community_grid_view">
     </GridView>
-    </LinearLayout>
 </LinearLayout>

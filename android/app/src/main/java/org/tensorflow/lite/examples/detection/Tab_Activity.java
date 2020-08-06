@@ -116,13 +116,13 @@ public class Tab_Activity extends TabActivity {
         intent = new Intent(this, tab2.class);
 
 
-            spec = tabHost.newTabSpec("albums").setIndicator(tab2)
+            spec = tabHost.newTabSpec("albums").setIndicator("tab2")
                     .setContent(intent);
             tabHost.addTab(spec);
 
         intent = new Intent(this, tab3.class);
 
-        spec = tabHost.newTabSpec("songs").setIndicator(tab3)
+        spec = tabHost.newTabSpec("songs").setIndicator("tab3")
                 .setContent(intent);
         tabHost.addTab(spec);
 
@@ -135,6 +135,23 @@ public class Tab_Activity extends TabActivity {
         tabHost.getTabWidget().getChildAt(1).getLayoutParams().height=(screenHeight*15)/200;
         tabHost.getTabWidget().getChildAt(2).getLayoutParams().height=(screenHeight*15)/200;
 
-
-    }
-}
+//        tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+//
+//            @Override
+//            public void onTabChanged(String tabId) {
+//
+//                int i = getTabHost().getCurrentTab();
+//
+//                if (i == 0) {
+//                }
+//                else if (i ==1) {
+//
+//                } else if (i ==2) {
+//
+//
+//                }
+//
+//            }
+//        });
+//
+    }}

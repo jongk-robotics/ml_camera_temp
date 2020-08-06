@@ -51,7 +51,6 @@ public class LoginActivity extends AppCompatActivity {
         pwET=findViewById(R.id.password);
 
         fAuth = FirebaseAuth.getInstance();
-        progressBar = findViewById(R.id.my_progress_bar);
 
         // RegisterActivity 에서 가입 이메일 가져온다
         if(getIntent().getExtras() != null){
@@ -90,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                progressBar.setVisibility(View.VISIBLE);
+//                progressBar.setVisibility(View.VISIBLE);
 
                 //authenticate the user
                 fAuth.signInWithEmailAndPassword(email,pw).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
