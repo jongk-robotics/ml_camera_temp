@@ -40,6 +40,11 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendRecycl
         this.friends = friends;
     }
 
+    public void addItem(FriendImage friendImage)
+    {
+        friends.add(friendImage);
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.friend_recommend_item, parent, false);

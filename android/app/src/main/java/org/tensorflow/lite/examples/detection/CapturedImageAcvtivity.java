@@ -62,6 +62,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -128,6 +129,8 @@ public class CapturedImageAcvtivity extends AppCompatActivity
     private enum DetectorMode {
         TF_OD_API;
     }
+
+    private String inputName;
 
     private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     // Minimum detection confidence to track a detection.
@@ -211,8 +214,11 @@ public class CapturedImageAcvtivity extends AppCompatActivity
     private PlaceNameRequest placeNameRequest;
 
 
-    //이름 리스트
-    private ArrayList<String> names = new ArrayList<>();
+    //사진에서 인식된 친구들의 이름 리스트
+    private ArrayList<String> detectedNames = new ArrayList<>();
+
+    //새로 추가된 친구들의 리스트
+    private ArrayList<String> newNames = new ArrayList<>();
 
     @Override
     public void processLocationNames(ArrayList<String> nameList) {
@@ -224,67 +230,6 @@ public class CapturedImageAcvtivity extends AppCompatActivity
             }
         });
     }
-
-//    @Override
-//    public void onPlacesFailure(PlacesException e) {
-//        isUpdatingFPlaceName = false;
-//        e.printStackTrace();
-//    }
-//
-//    @Override
-//    public void onPlacesStart() {
-//        isUpdatingPlaceName = true;
-//    }
-//
-//    @Override
-//    public void onPlacesSuccess(List<Place> places) {
-//        mCurrentLocationNames = new ArrayList<>();
-//
-//        final String point = "point_of_interest";
-//
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                for (noman.googleplaces.Place place : places) {
-//                    Log.d(TAG, "location: " + place.getLatitude() + ", " + place.getLongitude());
-//                    Log.d(TAG, "name: " + place.getName());
-//                    for(String type : place.getTypes())
-//                    {
-//                        String tempType = new String(type);
-//                        if(type.equals(point))
-//                        {
-//                            mCurrentLocationNames.add(place.getName());
-//                            break;
-//                        }
-//
-//                    }
-//                }
-//
-//                updatePlaceRecyclerView(mCurrentLocationNames);
-//            }
-//        });
-//    }
-
-//    @Override
-//    public void onPlacesFinished() {
-//        isUpdatingPlaceName = false;
-//    }
-
-//    public void showPlaceInformation(LatLng location)
-//    {
-//        if (previous_marker != null)
-//            previous_marker.clear();//지역정보 마커 클리어
-//
-//        new NRPlaces.Builder()
-//                .listener(CapturedImageAcvtivity.this)
-//                .key(getString(R.string.places_api_key))
-//                .latlng(location.latitude, location.longitude)//현재 위치
-//                .radius(30) //500 미터 내에서 검색
-//                .build()
-//                .execute();
-//    }
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -438,29 +383,29 @@ public class CapturedImageAcvtivity extends AppCompatActivity
             }
         });
 
-        addFriendBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context mContext = getApplicationContext();
-                LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
-                View layout = inflater.inflate(R.layout.custom_dialog,(ViewGroup) findViewById(R.id.layout_root));
-
-                AlertDialog.Builder aDialog = new AlertDialog.Builder(mContext);//여기서buttontest는 패키지이름
-                aDialog.setTitle("Is your friend not in the list?");
-                aDialog.setView(layout);
-
-                aDialog.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-                aDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-                AlertDialog ad = aDialog.create();
-                ad.show();
-            }
-        });
+//        addFriendBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Context mContext = getApplicationContext();
+//                LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+//                View layout = inflater.inflate(R.layout.custom_dialog,(ViewGroup) findViewById(R.id.layout_root));
+//
+//                AlertDialog.Builder aDialog = new AlertDialog.Builder(mContext);//여기서buttontest는 패키지이름
+//                aDialog.setTitle("Is your friend not in the list?");
+//                aDialog.setView(layout);
+//
+//                aDialog.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                    }
+//                });
+//                aDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                    }
+//                });
+//                AlertDialog ad = aDialog.create();
+//                ad.show();
+//            }
+//        });
     }
 
     void updatePlaceRecyclerView(ArrayList<String> placeList)
@@ -474,9 +419,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
     {
         final CommonConstants CC = new CommonConstants();
         final String userEmail = user.getEmail();
-        final CollectionReference colRef = mFireStoreRef.collection("Users").document(userEmail).collection("Friends");
-
-
+        final CollectionReference colRef = mFireStoreRef.collection("Users").document(userEmail).collection("Friend");
 
         colRef
             .get()
@@ -488,7 +431,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String name = (String) document.get("name");
-                            String url = (String) document.get("profile");
+                            String url = (String) document.get("profileUrl");
 
                             if(nameList.contains(name)){
                                 friends.add(new FriendImage(name, url));
@@ -510,53 +453,94 @@ public class CapturedImageAcvtivity extends AppCompatActivity
             });
     }
 
-//    void uploadFriends(HashMap<String, Bitmap> friends)
-//    {
-//
-//    }
-//
-//    void uploadFriendImage(String name, Bitmap bitmap)
-//    {
-//        //이미지 저장
-//        SimpleDateFormat s = new SimpleDateFormat("ddMMyyyyhhmmss");
-//        String format = s.format(new Date());
-//        String fileName = "image_" + format + ".jpg";
-//
-//        byte[] inputData = new byte[0];
-//
-//        try {
-//            InputStream iStream =  getContentResolver().openInputStream(uri);
-//            inputData = getBytes(iStream);
-//        }
-//        catch (IOException e)
-//        {
-//            e.printStackTrace();
-//        }
-//
-//        final byte[] inputData2 = inputData;
-//
-//        // get image url
-//        final StorageReference riversRef = mStorageRef.child(fileName);
-//        UploadTask uploadTask = riversRef.putBytes(inputData2);
-//        uploadTask.addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//                // Handle unsuccessful uploads
-//                Log.d("FIREBASE", "upload failure");
-//            }
-//        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-//                // ...
-//                //riversRef.getDownloadUrl(); //업로드한 이미지의 url
-//                String imageUrl =riversRef.getDownloadUrl().toString();
-//
-//                uploadData(imageUrl);
-//                Log.d("FIREBASE", "upload success");
-//            }
-//        });
-//    }
+    void uploadFriends(HashMap<String, Bitmap> friends)
+    {
+        Log.d(TAG, "map size: " + friends.size());
+
+        for(Map.Entry<String, Bitmap> entry : friends.entrySet())
+        {
+            uploadFriendProfile(entry.getKey(), entry.getValue());
+        }
+    }
+
+    void uploadFriendProfile(String name, Bitmap bitmap)
+    {
+        //이미지 저장
+        SimpleDateFormat s = new SimpleDateFormat("ddMMyyyyhhmmss");
+        String format = s.format(new Date());
+        String fileName = "image_" + format + ".jpg";
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
+        byte[] inputData = stream.toByteArray();
+
+        Log.d(TAG, "length: " + inputData.length);
+
+        // get image url
+        final StorageReference riversRef = mStorageRef.child(fileName);
+        final UploadTask uploadTask=riversRef.putBytes(inputData);
+        Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if(!task.isSuccessful()){
+                    //throw.task.getException();
+                }
+
+                return riversRef.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if(task.isSuccessful()){
+                    Uri downloadUri = task.getResult();
+                    String imageUrl = String.valueOf(downloadUri);
+
+                    FriendImage friend = new FriendImage(name, imageUrl);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mFriedRecyclerViewAdapter.addItem(friend);
+                            mFriedRecyclerViewAdapter.notifyDataSetChanged();
+                        }
+                    });
+
+                    registerFriend(name, imageUrl);
+                }else{
+
+                }
+            }
+        });
+    }
+
+    void registerFriend(String name, String url)
+    {
+        String userEmail = user.getEmail();
+
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("name", name);
+        data.put("profileUrl", url);
+        data.put("count", 0);
+
+        WriteBatch batch = mFireStoreRef.batch();
+        mFireStoreRef
+                .collection("Users")
+                .document(userEmail)
+                .collection("Friend")
+                .document(name)
+                .set(data).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully updated!");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error updating document", e);
+                    }
+                });;
+
+    }
 
     void uploadImage(Uri uri)
     {
@@ -601,27 +585,6 @@ public class CapturedImageAcvtivity extends AppCompatActivity
                 }
             }
         });
-
-//        UploadTask uploadTask = riversRef.putBytes(inputData2);
-//        uploadTask.addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception exception) {
-//                // Handle unsuccessful uploads
-//                Log.d("FIREBASE", "upload failure");
-//            }
-//        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//            @Override
-//            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-//                // ...
-//                //riversRef.getDownloadUrl(); //업로드한 이미지의 url
-//                String imageUrl = riversRef.getDownloadUrl().toString();
-//                Log.d("url",imageUrl);
-//
-//                uploadData(imageUrl);
-//                Log.d("FIREBASE", "upload success");
-//            }
-//        });
     }
 
     void uploadData(Uri imgOfUrl)
@@ -641,7 +604,8 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
         final Photo photo = new Photo();
         photo.setUserEmail(userEmail);
-        photo.setFriends(names);
+        photo.setFriends(detectedNames);
+        photo.setShared(true);
         photo.setLocation(location);
         photo.setLocationName(mCurrentLocationNames.get(0));
         photo.setTimeStamp(timeStamp);
@@ -658,17 +622,26 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
         batch.set(ImageRef, photoData);
 
-        if(!names.isEmpty())
+        if(!detectedNames.isEmpty())
         {
-            for(String name : names){
+            for(String name : detectedNames){
                 DocumentReference FriendRef = mFireStoreRef
                         .collection("Users")
                         .document(userEmail)
                         .collection("Friend")
                         .document(name);
 
-                Friends friends = new Friends(name, photo, imgOfUrl.toString());
-                batch.set(FriendRef, friends);
+                DocumentReference FriendImageRef = FriendRef
+                        .collection("Images")
+                        .document(fileName);
+
+                batch.set(FriendImageRef, photoData);
+
+                HashMap<String, Object> data = new HashMap<>();
+                data.put("count", FieldValue.increment(1));
+                data.put("timeStamp", timeStamp);
+
+                batch.update(FriendRef, data);
             }
         }
 
@@ -686,62 +659,6 @@ public class CapturedImageAcvtivity extends AppCompatActivity
                 Log.w(TAG, "Error updating document", e);
             }
         });
-
-//        if(names.isEmpty())
-//        {
-//
-//        }
-//        else{
-//            // FRIENDS DB input
-//
-//            /*TODO 친구추가 어떻게 ??*/
-//            String imgUrlFriends = new String();
-//            final Friends friend = new Friends("Sally", photo);
-//            final HashMap<String, Object> frienData = friend.toMap();
-//
-//            mFireStoreRef2
-//                    .collection("Users")
-//                    .document(userEmail)
-//                    .collection("Friends")
-//                    .document(friend.getName())
-//                    .set(frienData)
-//                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                        @Override
-//                        public void onSuccess(Void aVoid) {
-//                            Log.d(TAG, "DocumentSnapshot successfully updated!");
-//
-//                            mFireStoreRef2
-//                                    .collection("Users")
-//                                    .document(userEmail)
-//                                    .collection("Friends")
-//                                    .document(friend.getName())
-//                                    .collection("Photo")
-//                                    .document(photo.getUrl())
-//                                    .set(photoData)
-//                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                        @Override
-//                                        public void onSuccess(Void aVoid) {
-//                                            Log.d(TAG, "DocumentSnapshot successfully updated!");
-//                                            Toast.makeText(getApplicationContext(), "업로드 완료", Toast.LENGTH_SHORT).show();
-//                                            Intent intent = new Intent(getApplicationContext(), Tab_Activity.class);
-//                                            startActivity(intent);
-//                                        }
-//                                    })
-//                                    .addOnFailureListener(new OnFailureListener() {
-//                                        @Override
-//                                        public void onFailure(@NonNull Exception e) {
-//                                            Log.w(TAG, "Error updating document", e);
-//                                        }
-//                                    });
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            Log.w(TAG, "Error updating document", e);
-//                        }
-//                    });
-//        }
     }
 
 
@@ -820,7 +737,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         return byteBuffer.toByteArray();
     }
 
-    private String showAddFaceDialog(SimilarityClassifier.Recognition rec) {
+    private void showAddFaceDialog(SimilarityClassifier.Recognition rec) {
 
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -833,21 +750,20 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         ivFace.setImageBitmap(rec.getCrop());
         etName.setHint("이름을 입력해주세요");
 
-        final String[] name = {""};
-
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dlg, int i) {
 
-                name[0] = etName.getText().toString();
-                if (name[0].isEmpty()) {
+                String name = etName.getText().toString();
+                if (name.isEmpty()) {
                     return;
                 }
-                detector.register(name[0], rec);
-                recognitionArray.addRecognition(name[0], rec);
+                detector.register(name, rec);
+                recognitionArray.addRecognition(name, rec);
+                Log.d(TAG, "new name: " + name);
+                addNewName(name);
+                uploadFriendProfile(name, rec.getCrop());
 
-//                names.add(name[0]);
-                //knownFaces.put(name, rec);
                 dlg.dismiss();
             }
         });
@@ -861,8 +777,6 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
         builder.setView(dialogLayout);
         builder.show();
-
-        return name[0];
     }
 
     public void CheckPermissions() {
@@ -1006,39 +920,35 @@ public class CapturedImageAcvtivity extends AppCompatActivity
             Log.d(TAG, "not zero");
             //왜 첫번째 꺼를 할까??????
 
+            initializeName();
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ArrayList<String> recordedNames = new ArrayList<>();
-                    ArrayList<String> newNames = new ArrayList<>();
-                    HashMap<String, Bitmap> newFriends = new HashMap<>();
-
                     for(SimilarityClassifier.Recognition record : mappedRecognitions)
                     {
                         if (record.getExtra() != null) {
                             Log.d(TAG, record.toString());
                             if(record.getDistance() < 1.0f && record.getDistance() > 0.0f){
                                 Log.d(TAG, "it is recorded: " + record.getTitle());
-                                recordedNames.add(record.getTitle());
+                                addDetectedName(record.getTitle());
                             }
                             else {
                                 Log.d(TAG, "it is not recorded");
 
-                                String name = showAddFaceDialog(record);
-                                recordedNames.add(name);
+                                showAddFaceDialog(record);
+
+//                                Log.d(TAG, "name: " + name);
 //                                if(!name.isEmpty())
 //                                {
-//
+//                                    recordedNames.add(name);
 //                                    newFriends.put(name, Bitmap.createBitmap(record.getCrop()));
 //                                }
                             }
                         }
                     }
 
-                    names = recordedNames;
-
-//                    uploadFriends(newFriends);
-                    updateFriendRecyclerView(recordedNames);
+                    updateFriendRecyclerView(detectedNames);
                 }
             });
 
@@ -1047,6 +957,25 @@ public class CapturedImageAcvtivity extends AppCompatActivity
             Log.d(TAG, "zero");
         }
     }
+
+    public void addDetectedName(String name)
+    {
+        detectedNames.add(name);
+    }
+
+    public void addNewName(String name)
+    {
+        newNames.add(name);
+        detectedNames.add(name);
+    }
+
+    public void initializeName()
+    {
+        newNames = new ArrayList<>();
+        detectedNames = new ArrayList<>();
+    }
+
+
 
     // Face Processing
     private Matrix createTransform(

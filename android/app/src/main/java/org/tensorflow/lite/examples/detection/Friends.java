@@ -49,6 +49,7 @@ public class Friends {
         HashMap<String, Object> result=new HashMap<>();
         result.put("name", name);
         result.put("photo", photo);
+        result.put("profileUrl", profileUrl);
 
         return result;
     }

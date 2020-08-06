@@ -57,14 +57,6 @@ public class CommuActivity extends AppCompatActivity {
 //
 //
 //        gridView.setAdapter(ImageAdapter);
-        for( int i=0; i<10; i ++){
-
-            Context context = getApplicationContext();
-            Drawable drawable = getResources().getDrawable(R.drawable.cute);
-
-            Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-            //ImageAdapter.addItem(bitmap);
-        }
         ImageAdapter.notifyDataSetChanged();
         mgridView.setAdapter(ImageAdapter);
         Button button = findViewById(R.id.back);
