@@ -189,6 +189,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
     private ListView mPlaceRecyclerView;
     private RecyclerView mFriendRecyclerView;
     private ImageButton addFriendBtn;
+    private ImageButton goBackBtn;
 
     //recycler view adapter
     private ArrayAdapter<String> mPlaceRecyclerViewAdapter;
@@ -239,6 +240,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         mFriendRecyclerView = findViewById(R.id.friendRecyclerView);
         mCaputuredBtn = findViewById(R.id.CaptureSaveBtn);
         addFriendBtn = findViewById(R.id.addFriendBtn);
+        goBackBtn = findViewById(R.id.goBackBtn);
 
         mActivity = this;
 
@@ -397,6 +399,14 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 //                ad.show();
 //            }
 //        });
+
+        goBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), DetectorActivity.class) ;
+                startActivity(intent) ;
+            }
+        });
     }
 
     void updatePlaceRecyclerView(ArrayList<String> placeList)
@@ -608,7 +618,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
         WriteBatch batch = mFireStoreRef.batch();
         DocumentReference ImageRef =  mFireStoreRef
-                .collection("Images")
+                .collection("Image")
                 .document(fileName);
 
         batch.set(ImageRef, photoData);
@@ -623,7 +633,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
                         .document(name);
 
                 DocumentReference FriendImageRef = FriendRef
-                        .collection("Images")
+                        .collection("Image")
                         .document(fileName);
 
                 batch.set(FriendImageRef, photoData);

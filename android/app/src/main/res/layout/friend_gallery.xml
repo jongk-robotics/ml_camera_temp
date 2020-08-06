@@ -3,21 +3,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:background="#262626"
-    >
+    android:background="#262626">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/friend_profile_image"
-        app:civ_border_width="2dp"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="100sp"
-        android:src="@drawable/profile2"
+        android:layout_marginTop="100sp">
+
+        <ProgressBar
+            android:id="@+id/progress_bar2"
+            style="@style/CircularDeterminateProgressBar"
+            android:layout_width="142dp"
+            android:layout_height="142dp"
+            android:indeterminateOnly="false"
+            android:progressDrawable="@drawable/circle_progress"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:progress="60" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_gravity="center"
+            android:id="@+id/friend_profile_image"
+            android:layout_width="100dp"
+            android:layout_height="110dp"
+            android:src="@drawable/profile2"
+            app:civ_border_width="2dp" />
+
+    </FrameLayout>
+
+<!--    <de.hdodenhof.circleimageview.CircleImageView-->
+<!--        android:id="@+id/friend_profile_image"-->
+<!--        android:layout_width="100dp"-->
+<!--        android:layout_height="110dp"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:layout_marginTop="100sp"-->
+<!--        android:src="@drawable/profile2"-->
+<!--        app:civ_border_width="2dp"-->
 
 
-        />
+<!--        />-->
 <TextView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

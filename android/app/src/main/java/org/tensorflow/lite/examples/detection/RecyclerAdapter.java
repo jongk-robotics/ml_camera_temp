@@ -2,6 +2,7 @@ package org.tensorflow.lite.examples.detection;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,16 +65,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         private CircleImageView profile_view;
         private int Image_num;
         private Button button;
+
         ItemViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    int position = getAdapterPosition();
                     Intent intent = new Intent(mContext, Friend_gallery.class);
 
                     //여기서 어떤 사람을 선택했는지 전달 !
-
-
+                    intent.putExtra("name", listData.get(position).getName());
+                    intent.putExtra("count", listData.get(position).getCloseCount().toString());
+                    intent.putExtra("url", listData.get(position).getProfile());
                     mContext.startActivity(intent);
                 }
             });
@@ -113,7 +117,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
 
         void onBind(Data data) {
             textView1.setText(data.getName());
-            textView2.setText(data.getTime());
+            textView2.setText(data.getDiff());
 //            button = itemView.findViewById(R.id.PHONEBUTTON);
 
             ProgressBar progressBar = itemView.findViewById(R.id.progress_bar);

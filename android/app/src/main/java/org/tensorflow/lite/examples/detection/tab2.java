@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -33,10 +34,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.lang.ref.Reference;
 import java.sql.Ref;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class tab2 extends AppCompatActivity {
 
-    private String TAG = "tab1";
+    private String TAG = "tab2";
 
 
     FirebaseFirestore db=FirebaseFirestore.getInstance();
@@ -87,7 +89,34 @@ public class tab2 extends AppCompatActivity {
                                 data.setProfile(document.get("profileUrl").toString());
                                 data.setName(document.get("name").toString());
                                 data.setCloseCount((Long) document.get("count")*10);
+                                Log.d(TAG, "ser time: " + document.get("timeStamp"));
+
+                                data.setTimeStamp((Timestamp) document.get("timeStamp"));
                                 Log.d(TAG, "items: " + document.get("profileUrl"));
+
+                                Date captured = data.getTimeStamp().toDate();
+                                Log.d("TIME STAMP: ",data.getTimeStamp().toString());
+                                Log.d("TIME CAPTURED: ", captured.toString());
+                                Date current = new Date();
+                                Log.d("TIME CURRENT: ", current.toString());
+                                Long diff = (current.getTime() - captured.getTime()) / (1000);
+                                Long diff2 = (current.getTime() - captured.getTime()) / (1000*60); //분
+                                Long diff3 = (current.getTime() - captured.getTime()) / (1000*60*24); //시간
+                                Long diff4 = (current.getTime() - captured.getTime()) / (3600000 * 24); //일
+                                Log.d("TIME DIFF: ", String.valueOf(diff));
+
+                                if(diff < 60){
+                                    data.setDiff(String.valueOf(diff) + " 초 전");
+                                }
+                                else if (diff>=60 && diff<3600){
+                                    data.setDiff(String.valueOf(diff2) + " 분 전");
+                                }
+                                else if (diff>=3600 && diff<86400){
+                                    data.setDiff(String.valueOf(diff3) + " 시간 전");
+                                }
+                                else if (diff>=86400){
+                                    data.setDiff(String.valueOf(diff4) + " 일 전");
+                                }
 
                                 adapter.addItem(data);
                             }

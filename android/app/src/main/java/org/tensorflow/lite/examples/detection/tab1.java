@@ -171,9 +171,13 @@ public class tab1 extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Photo photo = document.toObject(Photo.class);
                                 photos.add(photo);
+
                                 Date captured = photo.getTimeStamp().toDate();
+                                Log.d("TIME STAMP: ",photo.getTimeStamp().toString());
+                                Log.d("TIME CAPTURED: ", captured.toString());
                                 Date current = new Date();
-                                Long diff = current.getTime() - captured.getTime();
+                                Log.d("TIME CURRENT: ", current.toString());
+                                Long diff = (current.getTime() - captured.getTime()) / (3600000 * 24);
                                 Log.d("TIME DIFF: ", String.valueOf(diff));
                             }
 
