@@ -32,15 +32,13 @@ import java.util.ArrayList;
 
 public class tab3 extends AppCompatActivity {
 
-    private ArrayList<String> imageList;
-    private ArrayList<String> placeList;
+    private ArrayList<Photo> photoList;
 
     private ViewPagerAdapter viewPagerAdapter;
 
     private static final int DP = 24;
 
     ImageView commuBtn;
-    ImageButton scrapBtn;
 
     private FirebaseFirestore mFireStoreRef = FirebaseFirestore.getInstance();
 
@@ -63,13 +61,13 @@ public class tab3 extends AppCompatActivity {
         viewPager.setPadding(margin, 0, margin, 0);
         viewPager.setPageMargin(margin/2);
 
-        viewPagerAdapter = new ViewPagerAdapter(this, imageList,placeList);
+        photoList = new ArrayList<>();
+
+        viewPagerAdapter = new ViewPagerAdapter(this, photoList);
         viewPager.setAdapter(viewPagerAdapter);
 
         commuBtn=(ImageView)findViewById(R.id.gatherCommunity);
         commuBtn.setColorFilter(Color.parseColor("#FFE91E63"), PorterDuff.Mode.SRC_IN);
-
-        scrapBtn=(ImageButton)findViewById(R.id.scrap);
 
         downloadData();
 
@@ -91,8 +89,7 @@ public class tab3 extends AppCompatActivity {
     {
         final CollectionReference imagesRef = mFireStoreRef.collection("Images");
 
-        imageList = new ArrayList<>();
-        placeList = new ArrayList<>();
+        photoList = new ArrayList<>();
 
         imagesRef
                 .whereEqualTo("isShared", true)
@@ -103,15 +100,13 @@ public class tab3 extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Photo photo = document.toObject(Photo.class);
-                                imageList.add(photo.getUrl().toString());
-                                placeList.add(photo.getLocationName().toString());
+                                photoList.add(photo);
                             }
 
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    viewPagerAdapter.setImageList(imageList);
-                                    viewPagerAdapter.setPlaceList(placeList);
+                                    viewPagerAdapter.setPhotoList(photoList);
                                     viewPagerAdapter.notifyDataSetChanged();
                                     Log.d(TAG, "items: " + viewPagerAdapter.getCount());
                                 }
@@ -128,8 +123,7 @@ public class tab3 extends AppCompatActivity {
 
 
 
-        imageList = new ArrayList();
-        placeList = new ArrayList<>();
+        photoList = new ArrayList<>();
 
     }
 

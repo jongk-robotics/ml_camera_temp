@@ -27,11 +27,6 @@
             android:layout_marginLeft="3dp"
             android:id="@+id/gatherCommunity"
             android:src="@drawable/menu" />
-        <ImageButton
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:id="@+id/scrap"
-            android:background="@drawable/ic_baseline_star_border_24" />
     </LinearLayout>
 
 

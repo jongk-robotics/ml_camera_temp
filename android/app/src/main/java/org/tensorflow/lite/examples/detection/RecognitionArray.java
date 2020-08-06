@@ -1,6 +1,7 @@
 package org.tensorflow.lite.examples.detection;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.util.Pair;
 
@@ -33,6 +34,7 @@ public class RecognitionArray {
     {
         Gson gson = new Gson();
         String json = gson.toJson(recognitions);
+        Intent intent;
 
         Log.d("SAVESAVE", "savejson: " + json);
 

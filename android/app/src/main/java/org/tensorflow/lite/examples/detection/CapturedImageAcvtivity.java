@@ -123,6 +123,9 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
     private static final boolean MAINTAIN_ASPECT = false;
 
+    //업로드 할 때 뜨는 dialog
+    UploadWaiting uploadDialog;
+
     //recogintion array
     RecognitionArray recognitionArray = new RecognitionArray();
 
@@ -198,6 +201,9 @@ public class CapturedImageAcvtivity extends AppCompatActivity
     private ListView mPlaceRecyclerView;
     private RecyclerView mFriendRecyclerView;
     private ImageButton addFriendBtn;
+
+    //gps
+    private GpsTracker gpsTracker;
 
     //recycler view adapter
     private ArrayAdapter<String> mPlaceRecyclerViewAdapter;
@@ -279,6 +285,10 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
         placeNameRequest = new PlaceNameRequest(key, this, colRef, 30);
 
+        //upload 할 때 뜨는 dialog
+        uploadDialog = new UploadWaiting(this);
+
+
         //face detector
         faceDetector = getFaceDetector();
 
@@ -301,6 +311,8 @@ public class CapturedImageAcvtivity extends AppCompatActivity
                 finish();
             }
         }
+
+        CheckPermissions(); /* TODO splash에 위치 권한요청도 추가하기 */
 
         Log.d(TAG, "oncreate");
 
@@ -342,19 +354,17 @@ public class CapturedImageAcvtivity extends AppCompatActivity
             }
         });
 
-        locationRequest = new LocationRequest()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(UPDATE_INTERVAL_MS)
-                .setFastestInterval(FASTEST_UPDATE_INTERVAL_MS);
-
-        LocationSettingsRequest.Builder builder =
-                new LocationSettingsRequest.Builder();
-
-        builder.addLocationRequest(locationRequest);
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-        CheckPermissions(); /* TODO splash에 위치 권한요청도 추가하기 */
+//        locationRequest = new LocationRequest()
+//                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+//                .setInterval(UPDATE_INTERVAL_MS)
+//                .setFastestInterval(FASTEST_UPDATE_INTERVAL_MS);
+//
+//        LocationSettingsRequest.Builder builder =
+//                new LocationSettingsRequest.Builder();
+//
+//        builder.addLocationRequest(locationRequest);
+//
+//        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
 
         mCaputuredBtn.setOnClickListener(new View.OnClickListener() {
@@ -370,8 +380,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 //                            showPlaceInformation(currentPosition);
 //                        }
                         Log.d(TAG, "update place name");
-                        placeNameRequest.startGetNames(mCurrentLocation);
-                        Toast.makeText(getApplicationContext(), "위치 정보를 받아 오고 있습니다.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "위치 이름을 받아 오고 있습니다.", Toast.LENGTH_LONG).show();
                     }
                     else{
                         uploadImage(uri);
@@ -544,6 +553,13 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
     void uploadImage(Uri uri)
     {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                uploadDialog.showDialog();
+            }
+        });
+
         //이미지 저장
         SimpleDateFormat s = new SimpleDateFormat("ddMMyyyyhhmmss");
         String format = s.format(new Date());
@@ -598,6 +614,8 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         //이미지 데이터
         Timestamp timeStamp = new Timestamp(new Date());
 
+        final boolean isPeople = (detectedNames.size() != 0);
+
         final boolean isLiked = false;
 
         final GeoPoint location = new GeoPoint(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
@@ -606,14 +624,13 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         photo.setUserEmail(userEmail);
         photo.setFriends(detectedNames);
         photo.setShared(true);
+        photo.setPeople(isPeople);
         photo.setLocation(location);
         photo.setLocationName(mCurrentLocationNames.get(0));
         photo.setTimeStamp(timeStamp);
         photo.setUrl(imgOfUrl.toString());
 
         final HashMap<String, Object> photoData = photo.toMap();
-
-        Log.d(TAG, "p url: " + imgOfUrl);
 
         WriteBatch batch = mFireStoreRef.batch();
         DocumentReference ImageRef =  mFireStoreRef
@@ -657,6 +674,16 @@ public class CapturedImageAcvtivity extends AppCompatActivity
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.w(TAG, "Error updating document", e);
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        uploadDialog.dismiss();
+                    }
+                });
             }
         });
     }
@@ -1201,8 +1228,12 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
             Log.d(TAG, "startLocationUpdates : call mFusedLocationClient.requestLocationUpdates");
 
-            mFusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
-
+//            mFusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+            //현재 위치 가져오기
+            gpsTracker = new GpsTracker(this);
+            mCurrentLocation = gpsTracker.getLocation();
+            currentPosition = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+            placeNameRequest.startGetNames(mCurrentLocation);
 
         }
 
