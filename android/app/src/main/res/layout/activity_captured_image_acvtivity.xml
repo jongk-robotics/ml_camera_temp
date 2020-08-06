@@ -85,11 +85,12 @@
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
         android:layout_margin="15dp">
+
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/friendRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:id="@+id/friendRecyclerView"
-            android:orientation="horizontal"/>
+            android:orientation="horizontal" />
 
         <ListView
             android:id="@+id/placeRecyclerView"

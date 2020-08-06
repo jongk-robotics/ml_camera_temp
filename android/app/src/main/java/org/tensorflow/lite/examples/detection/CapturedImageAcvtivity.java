@@ -635,7 +635,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
         WriteBatch batch = mFireStoreRef.batch();
         DocumentReference ImageRef =  mFireStoreRef
-                .collection("Image")
+                .collection("Images")
                 .document(fileName);
 
         batch.set(ImageRef, photoData);

@@ -3,22 +3,27 @@ package org.tensorflow.lite.examples.detection;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
-public class Photo {
+public class Photo implements Serializable {
     private String url;
     private String userEmail;
-    private Timestamp timeStamp;
+
+    private Long seconds;
+    private int nanoSeconds;
+
     private String locationName;
     private String memo = "";
 
     private ArrayList<String> friends = new ArrayList<>();
 
-    private GeoPoint location;
+    private double latitude;
+    private double longitude;
 
-    private boolean isLiked = false;
+    private ArrayList<String> likedPeople = new ArrayList<>();
+
     private boolean isShared = false;
     private boolean isPeople = false;
 
@@ -26,7 +31,6 @@ public class Photo {
     {
 
     }
-
 
     public void setUrl(String url)
     {
@@ -40,21 +44,32 @@ public class Photo {
 
     public void setTimeStamp(Timestamp timeStamp)
     {
-        this.timeStamp = timeStamp;
+        this.seconds = timeStamp.getSeconds();
+        this.nanoSeconds = timeStamp.getNanoseconds();
     }
 
     public void setLocation(GeoPoint location)
     {
-        this.location = location;
+        this.latitude = location.getLatitude();
+        this.longitude = location.getLongitude();
     }
 
-    public void setIsLiked(boolean isLiked)
+    public void setLikedPeople(ArrayList<String> likedPeople) {
+        this.likedPeople = likedPeople;
+    }
+
+    public void addLikedPeople(String userEmail)
     {
-        this.isLiked = isLiked;
+        likedPeople.add(userEmail);
     }
 
-    public void setLiked(boolean liked) {
-        isLiked = liked;
+    public void removeLikedPeople(String userEmail)
+    {
+        likedPeople.remove(userEmail);
+    }
+
+    public ArrayList<String> getLikedPeople() {
+        return likedPeople;
     }
 
     public void setLocationName(String locationName) {
@@ -82,7 +97,7 @@ public class Photo {
     }
 
     public GeoPoint getLocation() {
-        return location;
+        return new GeoPoint(latitude, longitude);
     }
 
     public ArrayList<String> getFriends() {
@@ -98,7 +113,7 @@ public class Photo {
     }
 
     public Timestamp getTimeStamp() {
-        return timeStamp;
+        return new Timestamp(seconds, nanoSeconds);
     }
 
     public String getUserEmail() {
@@ -115,15 +130,34 @@ public class Photo {
         result.put("url", url);
         result.put("userEmail", userEmail);
         result.put("friends", friends);
-        result.put("timeStamp", timeStamp);
-        result.put("location", location);
+        result.put("timeStamp", new Timestamp(seconds, nanoSeconds));
+        result.put("location", new GeoPoint(latitude, longitude));
         result.put("locationName", locationName);
         result.put("memo", memo);
-        result.put("isLiked", isLiked);
+        result.put("likedPeople", likedPeople);
         result.put("isShared", isShared);
         result.put("isPeople", isPeople);
 
         return result;
+    }
+
+    public Photo copy()
+    {
+        Photo copy  = new Photo();
+        copy.url = url;
+        copy.userEmail = userEmail;
+        copy.seconds = seconds;
+        copy.nanoSeconds = nanoSeconds;
+        copy.locationName = locationName;
+        copy.memo = memo;
+        copy.friends.addAll(friends);
+        copy.latitude = latitude;
+        copy.longitude = longitude;
+        copy.likedPeople.addAll(likedPeople);
+        copy.isPeople = isPeople;
+        copy.isShared = isShared;
+
+        return copy;
     }
 
 }
