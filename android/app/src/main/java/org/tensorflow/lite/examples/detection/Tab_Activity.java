@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabItem;
@@ -91,28 +92,26 @@ public class Tab_Activity extends TabActivity {
 
 
 
-        ImageView tab1 = new ImageView(this);
-        ImageView tab2 = new ImageView(this);
-        ImageView tab3 = new ImageView(this);
-        tab1.setImageResource(R.drawable.icon_tab1);
-        tab2.setImageResource(R.drawable.icon_tab2);
-        tab3.setImageResource(R.drawable.icon_tab3);
-
-
-        spec = tabHost.newTabSpec("artists").setIndicator(tab1)
+//        TextView tab1 = new TextView(this);
+//        TextView tab2 = new TextView(this);
+//        TextView tab3 = new TextView(this);
+//        tab1.setText("tab1");
+//        tab2.setText("tab2");
+//        tab3.setText("tab3");
+        spec = tabHost.newTabSpec("artists").setIndicator("tab1")
                 .setContent(intent);
         tabHost.addTab(spec);
 
         intent = new Intent(this, tab2.class);
 
 
-            spec = tabHost.newTabSpec("albums").setIndicator(tab2)
+            spec = tabHost.newTabSpec("albums").setIndicator("tab2")
                     .setContent(intent);
             tabHost.addTab(spec);
 
         intent = new Intent(this, tab3.class);
 
-        spec = tabHost.newTabSpec("songs").setIndicator(tab3)
+        spec = tabHost.newTabSpec("songs").setIndicator("tab3")
                 .setContent(intent);
         tabHost.addTab(spec);
 
@@ -125,6 +124,23 @@ public class Tab_Activity extends TabActivity {
         tabHost.getTabWidget().getChildAt(1).getLayoutParams().height=(screenHeight*15)/200;
         tabHost.getTabWidget().getChildAt(2).getLayoutParams().height=(screenHeight*15)/200;
 
-
-    }
-}
+//        tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+//
+//            @Override
+//            public void onTabChanged(String tabId) {
+//
+//                int i = getTabHost().getCurrentTab();
+//
+//                if (i == 0) {
+//                }
+//                else if (i ==1) {
+//
+//                } else if (i ==2) {
+//
+//
+//                }
+//
+//            }
+//        });
+//
+    }}

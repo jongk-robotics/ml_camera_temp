@@ -5,6 +5,13 @@
     android:layout_height="match_parent"
     tools:context=".tab3"
     android:id="@+id/Tab3">
+    <ImageButton
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/back"
+        ></ImageButton>
 
     <TextView
         android:layout_width="match_parent"
@@ -12,7 +19,7 @@
         android:text="Community"
         android:gravity="center"
         android:textStyle="bold"
-        android:textColor="#95E11584"
+        android:textColor="#505FE8"
         android:layout_marginTop="20sp"
 
         ></TextView>

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#262626"
+    android:background="#FFFFFF"
 
     >
     <TextView
@@ -18,10 +18,11 @@
     <GridView
         android:id="@+id/Add_friend_gridview"
         android:layout_width="match_parent"
-        android:layout_height="355dp"
+        android:layout_height="442dp"
         android:numColumns="3"
 
         ></GridView>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,11 +36,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/Add_friend_name"
+        android:hint="이름을 입력해주세요"
+        android:textColor="#8AFFFFFF"
         />
+
     <Button
+        android:id="@+id/btn_friend_change"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="change"
-        android:id="@+id/btn_friend_change"/>
+        android:layout_gravity="center"
+
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:text="change" />
 
 </LinearLayout>

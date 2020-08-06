@@ -205,6 +205,7 @@ public class tab1 extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(getApplicationContext()  , Add_profile.class );
+            intent.putExtra("profile","true");
             startActivity(intent);
         } // end onClick
 

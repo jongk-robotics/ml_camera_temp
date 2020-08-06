@@ -20,9 +20,9 @@
                 android:thicknessRatio="20"
                 android:useLevel="true">
                 <gradient
-                    android:endColor="#6200FF"
-                    android:startColor="#9500FF"
-                    android:centerColor="#FF00DD"
+                    android:endColor="#4800C4FF"
+                    android:startColor="#0040FF"
+                    android:centerColor="#00A6FF"
                     android:type="sweep" />
             </shape>
         </rotate>

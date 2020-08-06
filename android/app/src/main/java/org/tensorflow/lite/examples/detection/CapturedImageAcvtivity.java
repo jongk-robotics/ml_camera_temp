@@ -245,7 +245,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         mPlaceRecyclerView = findViewById(R.id.placeRecyclerView);
         mFriendRecyclerView = findViewById(R.id.friendRecyclerView);
         mCaputuredBtn = findViewById(R.id.CaptureSaveBtn);
-        addFriendBtn = findViewById(R.id.addFriendBtn);
+//        addFriendBtn = findViewById(R.id.addFriendBtn);
         goBackBtn = findViewById(R.id.goBackBtn);
 
         mActivity = this;
@@ -635,7 +635,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
 
         WriteBatch batch = mFireStoreRef.batch();
         DocumentReference ImageRef =  mFireStoreRef
-                .collection("Image")
+                .collection("Images")
                 .document(fileName);
 
         batch.set(ImageRef, photoData);

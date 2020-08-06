@@ -4,17 +4,30 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <ImageButton
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/back"
+        ></ImageButton>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="일기"
+        android:text="Record"
         android:gravity="center"
+        android:layout_marginRight="25dp"
         android:textStyle="bold"
-        android:textColor="#95E11584"
+        android:textColor="#505FE8"
         android:layout_marginTop="20sp"
 
         >
     </TextView>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,6 +41,7 @@
         android:layout_height="130dp"
         android:src="@drawable/profile2"
         android:layout_marginLeft="20dp"
+        android:elevation="20dp"
 
 
         />
@@ -35,46 +49,87 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:text="name"
-        android:fontFamily="@font/font"
-        android:layout_marginTop="15dp"
-        android:id="@+id/galley_name"
-        android:textSize="25sp"
-        android:gravity="center_horizontal"
-        android:textStyle="bold"
-
-        />
-            <TextView
-                android:layout_marginTop="20dp"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#FFFFFF"
-                android:fontFamily="@font/font"
+                android:orientation="horizontal">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#5C000000"
+        android:text="name : "
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/galley_name"
+        android:textSize="20sp"
+        android:gravity="center_horizontal"
 
-                android:text="info"
+        />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:text="name"
+                    android:layout_marginTop="15dp"
+                    android:id="@+id/galley_name2"
+                    android:textSize="25sp"
+                    android:gravity="center_horizontal"
+                    android:textStyle="bold"
+
+                    />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <TextView
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#5C000000"
+                android:text="info : "
                 android:id="@+id/galley_information"
                 android:textSize="13sp"
                 android:gravity="center_horizontal"
+                android:layout_marginLeft="15dp"
                 />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:text="info"
+                    android:id="@+id/galley_information2"
+                    android:textSize="13sp"
+                    android:gravity="center_horizontal"
+                    />
 
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+    <View
+        android:layout_marginTop="20dp"
+        android:layout_width="350dp"
+        android:layout_gravity="center"
+        android:layout_height="1.7dp"
+        android:layout_centerInParent="true"
+        android:background="#000000"/>
+
+
     <GridView
-        android:layout_marginTop="30dp"
+        android:id="@+id/grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="auto_fit"
+        android:layout_marginTop="30dp"
         android:columnWidth="90dp"
-        android:verticalSpacing="5dip"
-        android:horizontalSpacing="5dip"
-        android:stretchMode="columnWidth"
-        android:src="@mipmap/ic_launcher"
         android:gravity="center"
-        android:id="@+id/grid_view">
+        android:horizontalSpacing="5dip"
+        android:numColumns="auto_fit"
+        android:src="@mipmap/ic_launcher"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="5dip">
 
     </GridView>
 
