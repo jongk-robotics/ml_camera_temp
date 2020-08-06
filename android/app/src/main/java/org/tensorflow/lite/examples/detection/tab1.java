@@ -43,6 +43,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
+
 public class tab1 extends AppCompatActivity {
     GridView gridView;
     EditText editText;
@@ -94,6 +96,10 @@ public class tab1 extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Photo photo = document.toObject(Photo.class);
                                 photos.add(photo);
+                                Date captured = photo.getTimeStamp().toDate();
+                                Date current = new Date();
+                                Long diff = current.getTime() - captured.getTime();
+                                Log.d("TIME DIFF: ", String.valueOf(diff));
                             }
 
 

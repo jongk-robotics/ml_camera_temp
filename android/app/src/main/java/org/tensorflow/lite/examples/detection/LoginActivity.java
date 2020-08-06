@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loadUserData(String userEmail)
     {
-        CommonConstants CC = new CommonConstants();
+        CapturedImageAcvtivity.CommonConstants CC = new CapturedImageAcvtivity.CommonConstants();
         FirebaseFirestore Ref = FirebaseFirestore.getInstance();
         DocumentReference docRef = Ref.collection(CC.USERS).document(userEmail).collection(CC.RECOG_COL).document(CC.RECOG_DOC);
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
