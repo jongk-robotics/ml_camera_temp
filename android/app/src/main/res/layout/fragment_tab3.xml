@@ -6,16 +6,28 @@
     tools:context=".tab3"
     android:id="@+id/Tab3">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Community"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:textColor="#95E11584"
-        android:layout_marginTop="20sp"
-
-        ></TextView>
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal">-->
+<!--        <ImageButton-->
+<!--            android:layout_width="20dp"-->
+<!--            android:layout_height="20dp"-->
+<!--            android:layout_marginLeft="15dp"-->
+<!--            android:layout_marginTop="15dp"-->
+<!--            android:background="@drawable/back"-->
+<!--            ></ImageButton>-->
+<!--        <TextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Share"-->
+<!--            android:gravity="center"-->
+<!--            android:layout_marginRight="25dp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textColor="#505FE8"-->
+<!--            android:layout_marginTop="20sp" >-->
+<!--        </TextView>-->
+<!--    </LinearLayout>-->
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
@@ -25,16 +37,33 @@
         android:layout_marginTop="-3dp" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="15dp">
+        android:layout_alignParentRight="true">
+        <ImageButton
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/back"
+            ></ImageButton>
+        <TextView
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:text="Share"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="#505FE8"
+            android:layout_marginTop="20sp"
+            android:layout_marginLeft="25sp"
+            >
+        </TextView>
         <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginLeft="3dp"
+            android:layout_marginTop="15dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:id="@+id/gatherCommunity"
             android:src="@drawable/menu" />
     </LinearLayout>

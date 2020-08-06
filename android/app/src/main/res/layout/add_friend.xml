@@ -4,42 +4,69 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#262626"
+    android:background="#fff">
 
-    >
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="photo"
-        android:textColor="#8AFFFFFF"
-        android:textStyle="bold"
-        />
+        android:orientation="horizontal">
+        <ImageButton
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/back"
+            ></ImageButton>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="New Friend"
+            android:gravity="center"
+            android:layout_marginRight="25dp"
+            android:textStyle="bold"
+            android:textColor="#505FE8"
+            android:layout_marginTop="20sp">
+        </TextView>
+    </LinearLayout>
+<!--    <TextView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="photo"-->
+<!--        android:textColor="#8AFFFFFF"-->
+<!--        android:textStyle="bold"-->
+<!--        />-->
 
     <GridView
+        android:layout_marginTop="20dp"
         android:id="@+id/Add_friend_gridview"
         android:layout_width="match_parent"
         android:layout_height="355dp"
-        android:numColumns="3"
+        android:numColumns="3"></GridView>
+<!--    <TextView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="name"-->
+<!--        android:textColor="#8AFFFFFF"-->
+<!--        android:textStyle="bold"-->
 
-        ></GridView>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="name"
-        android:textColor="#8AFFFFFF"
-        android:textStyle="bold"
-
-        />
+<!--        />-->
 
     <EditText
-        android:layout_width="match_parent"
+        android:backgroundTint="#505FE8"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:id="@+id/Add_friend_name"
-        />
+        android:hint="Name" />
     <Button
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center"
+        android:background="@drawable/circle_outline"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="change"
+        android:layout_height="50dp"
+        android:text="add"
+        android:textColor="#FFF"
         android:id="@+id/btn_friend_change"/>
 
 </LinearLayout>

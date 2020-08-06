@@ -16,9 +16,11 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabItem;
@@ -94,10 +96,18 @@ public class Tab_Activity extends TabActivity {
         ImageView tab1 = new ImageView(this);
         ImageView tab2 = new ImageView(this);
         ImageView tab3 = new ImageView(this);
-        tab1.setImageResource(R.drawable.icon_tab1);
-        tab2.setImageResource(R.drawable.icon_tab2);
-        tab3.setImageResource(R.drawable.icon_tab3);
-
+        tab1.setImageResource(R.drawable.slide1);
+        tab2.setImageResource(R.drawable.slide2);
+        tab3.setImageResource(R.drawable.slide3);
+//        TextView tv = (TextView) tabHost.getTabWidget().getChildAt(0);
+//        tv.setTextColor(getResources().getColor(R.color.true_white));
+//        TextView tv1 = (TextView) tabHost.getTabWidget().getChildAt(1);
+//        tv.setTextColor(getResources().getColor(R.color.true_white));
+//        TextView tv2 = (TextView) tabHost.getTabWidget().getChildAt(2);
+//        tv.setTextColor(getResources().getColor(R.color.true_white));
+//        tab1.setText("RECORD");
+//        tab2.setText("NETWORK");
+//        tab3.setText("PUBLIC");
 
         spec = tabHost.newTabSpec("artists").setIndicator(tab1)
                 .setContent(intent);
