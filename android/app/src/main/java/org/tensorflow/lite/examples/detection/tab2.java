@@ -5,20 +5,47 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.lang.ref.Reference;
+import java.sql.Ref;
 import java.util.ArrayList;
 
 public class tab2 extends AppCompatActivity {
+
+    private String TAG = "tab1";
+
+
+    FirebaseFirestore db=FirebaseFirestore.getInstance();
+    //firebase
+    FirebaseAuth fAuth = FirebaseAuth.getInstance();
+    // get current user info
+    private final FirebaseUser user = fAuth.getCurrentUser();
+    //firestore
+    private FirebaseFirestore mFireStoreRef = FirebaseFirestore.getInstance();
 
     //RECYCLER ADAPTER를 불러옴
     private RecyclerAdapter adapter;
@@ -43,33 +70,46 @@ public class tab2 extends AppCompatActivity {
         ArrayList name =new ArrayList();
         ArrayList<String> profile  = new ArrayList<>();
 
-//여기서 firebase에서 데이터 가져와서 넣음
+        //여기서 firebase에서 데이터 가져와서 넣음
+        CollectionReference collRef = db.collection("Users").document(user.getEmail())
+                .collection("Friend");
 
-        for (int i = 0; i < name.size(); i++) {
-            // 각 List의 값들을 data 객체에 set 해줍니다.
-            Data data = new Data();
-            data.setName((String) name.get(i));
-            data.setProfile((String) profile.get(i));
+        ArrayList<Data> dataList = new ArrayList<>();
 
-            // 각 값이 들어간 data를 adapter에 추가합니다.
-            adapter.addItem(data);
-        }
-        Bitmap bm =BitmapFactory.decodeResource(getResources(), R.drawable.profile);
+        collRef
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Data data = new Data();
+                                data.setProfile(document.get("profileUrl").toString());
+                                data.setName(document.get("name").toString());
+                                data.setCloseCount((Long) document.get("count")*10);
+                                Log.d(TAG, "items: " + document.get("profileUrl"));
 
-        Data data = new Data();
-        data.setName("종서");
-        data.setTime("4일전");
-        data.setProfile(bm);
-        Data data2 = new Data();
-        data2.setName("승현");
-        data2.setTime("3시간전");
+                                adapter.addItem(data);
+                            }
 
-        data2.setProfile(bm);
 
-        // 각 값이 들어간 data를 adapter에 추가합니다.
-        adapter.addItem(data);
-        adapter.addItem(data2);
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //ImageAdapter.setPhotos(photos);
+                                adapter.notifyDataSetChanged();
+                                //Log.d(TAG, "items: " + adapter.getCount());
+                            }
+                        });
+
+                    }
+                });
+
         // adapter의 값이 변경되었다는 것을 알려줍니다.
-        adapter.notifyDataSetChanged();
+        //adapter.notifyDataSetChanged();
     }
 }

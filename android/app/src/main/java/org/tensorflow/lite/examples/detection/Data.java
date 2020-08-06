@@ -7,6 +7,8 @@ public class Data {
     private String name;
     private String time;
     private String profile;
+    private Long closeCount; // 승현 추가
+
     public String getProfile(){
         return profile;
     }
@@ -17,9 +19,15 @@ public class Data {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getCloseCount() {
+        return closeCount;
+    }
+    public void setCloseCount(Long closeCount) {
+        this.closeCount = closeCount;
     }
 
     public String getTime() {

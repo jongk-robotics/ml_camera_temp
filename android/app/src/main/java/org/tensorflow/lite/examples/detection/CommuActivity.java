@@ -63,7 +63,7 @@ public class CommuActivity extends AppCompatActivity {
             Drawable drawable = getResources().getDrawable(R.drawable.cute);
 
             Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-            ImageAdapter.addItem(bitmap);
+            //ImageAdapter.addItem(bitmap);
         }
         ImageAdapter.notifyDataSetChanged();
         mgridView.setAdapter(ImageAdapter);

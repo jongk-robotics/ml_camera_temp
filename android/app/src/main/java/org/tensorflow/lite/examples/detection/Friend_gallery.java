@@ -56,7 +56,7 @@ public class Friend_gallery extends AppCompatActivity {
             Drawable drawable = getResources().getDrawable(R.drawable.cute);
 
             Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-            ImageAdapter.addItem(bitmap);
+            //ImageAdapter.addItem(bitmap);
         }
         ImageAdapter.notifyDataSetChanged();
         gridView.setAdapter(ImageAdapter);
