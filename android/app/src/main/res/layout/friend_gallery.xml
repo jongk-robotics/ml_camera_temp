@@ -6,12 +6,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:background="#FFFFFF">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageButton
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/back"
+            android:id="@+id/back3"
+            ></ImageButton>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Moments Together"
+            android:gravity="center"
+            android:layout_marginRight="25dp"
+            android:textStyle="bold"
+            android:textColor="#505FE8"
+            android:layout_marginTop="20sp">
+        </TextView>
+    </LinearLayout>
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="100sp">
+        android:layout_marginTop="30sp">
 
         <ProgressBar
             android:id="@+id/progress_bar2"

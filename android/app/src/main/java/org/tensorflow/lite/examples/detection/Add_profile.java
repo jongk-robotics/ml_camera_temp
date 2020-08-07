@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -93,6 +94,15 @@ public class Add_profile extends AppCompatActivity {
 //                Intent intent = new Intent(getApplicationContext(),tab1.class);
 //
 //                startActivity(intent);
+                finish();
+            }
+        });
+
+        ImageButton button = findViewById(R.id.back1);
+//        downloadData();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 finish();
             }
         });

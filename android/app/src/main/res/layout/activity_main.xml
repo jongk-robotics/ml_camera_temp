@@ -74,14 +74,13 @@ tools:context=".Tab_Activity"
         </LinearLayout>
 
     </FrameLayout>
+
     <TabWidget
-        android:layout_marginBottom="5dp"
         android:id="@android:id/tabs"
-        android:layout_gravity="bottom"
-        android:background="@drawable/circle_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="20dp">
+        android:layout_gravity="bottom"
+        android:background="@drawable/circle_tab">
 
     </TabWidget>
 

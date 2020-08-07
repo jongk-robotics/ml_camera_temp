@@ -7,54 +7,65 @@
     android:background="#FFFFFF"
 
     >
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="photo"
-        android:textColor="#8AFFFFFF"
-        android:textStyle="bold"
-        />
+        android:orientation="horizontal">
+        <ImageButton
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/back"
+            android:id="@+id/back1"
+            ></ImageButton>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Friends"
+            android:gravity="center"
+            android:layout_marginRight="25dp"
+            android:textStyle="bold"
+            android:textColor="#505FE8"
+            android:layout_marginTop="20sp"
+
+            >
+        </TextView>
+    </LinearLayout>
 
     <GridView
         android:id="@+id/Add_profile_gridview"
         android:layout_width="match_parent"
         android:layout_height="355dp"
         android:numColumns="3"
-
+        android:layout_marginTop="20dp"
         ></GridView>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="name"
-        android:textColor="#8AFFFFFF"
-        android:textStyle="bold"
 
-        />
 
     <EditText
-        android:layout_width="match_parent"
+        android:backgroundTint="#505FE8"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:id="@+id/Add_profile_edittext1"
-        android:hint="이름을 입력해주세요"
+        android:hint="내 이름 수정하기"
         android:textColor="#8AFFFFFF"
-        />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="profile"
-        android:textColor="#8AFFFFFF"
-        android:textStyle="bold"
-
         />
 
     <EditText
-        android:layout_width="match_parent"
+        android:backgroundTint="#505FE8"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:id="@+id/Add_profile_edittext2"
-        android:hint="프로필을 입력해주세요"
+        android:hint="나의 상태 입력하기"
         android:textColor="#8AFFFFFF"
         />
+
     <Button
+        android:layout_marginTop="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="change"

@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     tools:context=".tab3"
     android:id="@+id/Tab3">
-    <ImageButton
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/back"
-        ></ImageButton>
+<!--    <ImageButton-->
+<!--        android:layout_width="20dp"-->
+<!--        android:layout_height="20dp"-->
+<!--        android:layout_marginLeft="15dp"-->
+<!--        android:layout_marginTop="15dp"-->
+<!--        android:background="@drawable/back"-->
+<!--        ></ImageButton>-->
 
 <!--    <LinearLayout-->
 <!--        android:layout_width="match_parent"-->
@@ -49,13 +49,14 @@
         android:orientation="horizontal"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true">
+
         <ImageButton
+            android:id="@+id/gotoCamera3"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="15dp"
-            android:background="@drawable/back"
-            ></ImageButton>
+            android:background="@drawable/back"></ImageButton>
         <TextView
             android:layout_width="250dp"
             android:layout_height="wrap_content"
@@ -72,7 +73,8 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:id="@+id/gatherCommunity"
-            android:src="@drawable/menu" />
+            android:src="@drawable/menu"
+            android:backgroundTint="#fff"/>
     </LinearLayout>
 
 

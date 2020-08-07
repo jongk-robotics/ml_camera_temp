@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -154,5 +155,15 @@ public class tab2 extends AppCompatActivity {
 
         // adapter의 값이 변경되었다는 것을 알려줍니다.
         //adapter.notifyDataSetChanged();
+
+        ImageButton button = findViewById(R.id.gotoCamera2);
+//        downloadData();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), DetectorActivity.class );
+                startActivity(intent);
+            }
+        });
     }
 }

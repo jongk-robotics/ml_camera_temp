@@ -7,9 +7,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -81,6 +83,15 @@ public class Friend_gallery extends AppCompatActivity {
         ImageAdapter = new Image_Adapter_clickable(this);
         gridView.setAdapter(ImageAdapter);
         downLoadPhoto();
+
+        ImageButton button = findViewById(R.id.back3);
+//        downloadData();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
 //        downLoadPhoto();
 
