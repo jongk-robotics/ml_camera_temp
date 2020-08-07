@@ -29,6 +29,7 @@
                 android:layout_gravity="bottom|end"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="10dp"
+                android:backgroundTint="#90505fe8"
                 android:background="@drawable/ic_baseline_favorite_border_24" />
         </FrameLayout>
 

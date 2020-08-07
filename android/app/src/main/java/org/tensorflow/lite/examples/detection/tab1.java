@@ -31,6 +31,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -73,8 +74,8 @@ public class tab1 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_tab1);
         gridView = (GridView) findViewById(R.id.grid_view);
-        nameView=findViewById(R.id.galley_name);
-        infoView=findViewById(R.id.galley_information);
+        nameView=findViewById(R.id.galley_name2);
+        infoView=findViewById(R.id.galley_information2);
 
         profile_image = findViewById(R.id.profile_image);
         profile_image.setOnClickListener(new MyListener());
@@ -91,14 +92,20 @@ public class tab1 extends AppCompatActivity {
             }
         });
 
-
-
-
-
         Log.d(TAG, "tab1");
 
         downLoadPhoto();
         downLoadProfile();
+
+        ImageButton button = findViewById(R.id.gotoCamera1);
+//        downloadData();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), DetectorActivity.class );
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

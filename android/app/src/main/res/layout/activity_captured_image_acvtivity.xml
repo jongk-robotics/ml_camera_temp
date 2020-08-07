@@ -52,32 +52,32 @@
         android:text="TextView" />
 
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="15dp">
+<!--    <LinearLayout-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:layout_alignParentTop="true"-->
+<!--        android:layout_alignParentRight="true"-->
+<!--        android:layout_margin="15dp">-->
 
-        <ImageButton
-            android:id="@+id/addFriendBtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="450dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/circle_button"
-            android:src="@drawable/ic_baseline_person_add_24"/>
-        <ImageButton
-            android:id="@+id/addPlaceBtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="450dp"
-            android:background="@drawable/circle_button"
-            android:src="@drawable/ic_baseline_add_location_24"/>
-    </LinearLayout>
+<!--        <ImageButton-->
+<!--            android:id="@+id/addFriendBtn"-->
+<!--            android:layout_width="40dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_alignParentRight="true"-->
+<!--            android:layout_marginTop="450dp"-->
+<!--            android:layout_marginRight="10dp"-->
+<!--            android:background="@drawable/circle_button"-->
+<!--            android:src="@drawable/ic_baseline_person_add_24"/>-->
+<!--        <ImageButton-->
+<!--            android:id="@+id/addPlaceBtn"-->
+<!--            android:layout_width="40dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_alignParentRight="true"-->
+<!--            android:layout_marginTop="450dp"-->
+<!--            android:background="@drawable/circle_button"-->
+<!--            android:src="@drawable/ic_baseline_add_location_24"/>-->
+<!--    </LinearLayout>-->
 
     <LinearLayout
         android:layout_width="wrap_content"

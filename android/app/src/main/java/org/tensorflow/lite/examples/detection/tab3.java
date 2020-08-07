@@ -105,6 +105,16 @@ public class tab3 extends AppCompatActivity {
             }
 
         });
+
+        ImageButton button = findViewById(R.id.gotoCamera3);
+//        downloadData();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), DetectorActivity.class );
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

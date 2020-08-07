@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -105,6 +106,16 @@ public class diary extends AppCompatActivity {
             });
 
         }
+
+        ImageButton button = findViewById(R.id.back4);
+//        downloadData();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         editbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

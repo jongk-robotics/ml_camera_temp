@@ -16,6 +16,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/back"
+            android:id="@+id/back2"
             ></ImageButton>
         <TextView
             android:layout_width="match_parent"
@@ -57,7 +58,7 @@
     <EditText
         android:backgroundTint="#505FE8"
         android:layout_gravity="center"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="10dp"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:id="@+id/Add_friend_name"
@@ -70,7 +71,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-
+        android:background="@drawable/button_background"
+        android:layout_marginTop="10dp"
         android:gravity="center"
         android:textColor="#FFFFFF"
         android:text="change" />

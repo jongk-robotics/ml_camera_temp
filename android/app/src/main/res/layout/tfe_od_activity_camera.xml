@@ -19,13 +19,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#000000">
+    android:background="#FFFFFF">
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/black"
+        android:background="#FFFFFF"
         android:orientation="vertical">
 
 
@@ -46,6 +46,24 @@
 
         </androidx.appcompat.widget.Toolbar>
 
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="org.tensorflow.demo.CameraActivity">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_switchcam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_margin="16dp"
+                android:layout_marginTop="400dp"
+                android:backgroundTint="#505fe8"
+                android:src="@drawable/change"
+                android:tint="@android:color/white" />
+        </FrameLayout>
+
     </RelativeLayout>
 
 
@@ -61,45 +79,27 @@
         tools:srcCompat="@android:drawable/divider_horizontal_textfield" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_switchcam"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginTop="400dp"
-        android:tint="@android:color/white"
-        android:src="@drawable/change"
-        android:layout_margin="16dp"
-        />
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/go_to_tab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
+        android:layout_gravity="bottom|end"
         android:layout_marginTop="400dp"
         android:tint="@android:color/white"
         android:src="@drawable/home"
         android:layout_margin="16dp"
+        android:backgroundTint="#505fe8"
         />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/check"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_gravity="center|bottom"
         android:tint="@android:color/white"
         android:src="@drawable/camera"
         android:layout_margin="16dp"
+        android:backgroundTint="#505fe8"
         />
-
-    <FrameLayout
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_anchor="@+id/relativeLayout"
-        app:layout_anchorGravity="center"
-        tools:context="org.tensorflow.demo.CameraActivity">
-
-    </FrameLayout>
 
 
     <!--    <View-->
