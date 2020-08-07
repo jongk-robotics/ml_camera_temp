@@ -241,7 +241,6 @@ public class CapturedImageAcvtivity extends AppCompatActivity
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         mCapturedImageView = findViewById(R.id.CapturedImageView);
-        mCapturedTextView = findViewById(R.id.CapturedNames);
         mPlaceRecyclerView = findViewById(R.id.placeRecyclerView);
         mFriendRecyclerView = findViewById(R.id.friendRecyclerView);
         mCaputuredBtn = findViewById(R.id.CaptureSaveBtn);

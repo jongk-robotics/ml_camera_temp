@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/Add_friend_name"
         android:hint="이름을 입력해주세요"
-        android:textColor="#8AFFFFFF"
+        android:textColor="#000"
         />
 
     <Button
@@ -74,7 +74,7 @@
         android:background="@drawable/button_background"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:textColor="#FFFFFF"
+        android:textColor="#000"
         android:text="change" />
 
 </LinearLayout>

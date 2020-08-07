@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/Add_profile_edittext1"
         android:hint="내 이름 수정하기"
-        android:textColor="#8AFFFFFF"
+        android:textColor="#000"
         />
 
     <EditText
@@ -61,7 +61,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/Add_profile_edittext2"
         android:hint="나의 상태 입력하기"
-        android:textColor="#8AFFFFFF"
+        android:textColor="#000"
         />
 
     <Button
