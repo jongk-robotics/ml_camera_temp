@@ -45,7 +45,7 @@
     <EditText
         android:backgroundTint="#505FE8"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:id="@+id/Add_profile_edittext1"
@@ -56,7 +56,7 @@
     <EditText
         android:backgroundTint="#505FE8"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:id="@+id/Add_profile_edittext2"
@@ -65,7 +65,7 @@
         />
 
     <Button
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="change"

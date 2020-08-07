@@ -74,7 +74,7 @@
             android:layout_height="25dp"
             android:id="@+id/gatherCommunity"
             android:src="@drawable/menu"
-            android:backgroundTint="#fff"/>
+            android:backgroundTint="#505FE8"/>
     </LinearLayout>
 
 
