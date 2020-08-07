@@ -81,36 +81,6 @@ public class Friend_gallery extends AppCompatActivity {
         ImageAdapter = new Image_Adapter_clickable(this);
         gridView.setAdapter(ImageAdapter);
         downLoadPhoto();
-
-//        downLoadPhoto();
-
-        //디비에서 그 계정에 해당하는 이미지 가져오기
-        //gridview로 보여줌
-
-//
-//        int gallery_length = bitmapArrayList.size(); //갤러리 길이
-//        Log.d("bitmap",Integer.toString(gallery_length));
-//        for(int i=0; i<gallery_length;i++){
-//            //각각의 비트맵
-//
-//            ImageAdapter.addItem(new SingerItem("dd",bitmapArrayList.get(i)));
-//
-//        }
-
-//        ImageAdapter.notifyDataSetChanged();
-//
-//
-//        gridView.setAdapter(ImageAdapter);
-//        for( int i=0; i<10; i ++){
-//
-//            Context context = getApplicationContext();
-//            Drawable drawable = getResources().getDrawable(R.drawable.cute);
-//
-//            Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-//            ImageAdapter.addItem(bitmap);
-//        }
-//        ImageAdapter.notifyDataSetChanged();
-//        gridView.setAdapter(ImageAdapter);
     }
 
     public void downLoadPhoto()

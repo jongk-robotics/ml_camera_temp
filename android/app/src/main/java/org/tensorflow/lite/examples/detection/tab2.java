@@ -115,8 +115,8 @@ public class tab2 extends AppCompatActivity {
                                 Log.d("TIME CURRENT: ", current.toString());
                                 Long diff = (current.getTime() - captured.getTime()) / (1000);
                                 Long diff2 = (current.getTime() - captured.getTime()) / (1000*60); //분
-                                Long diff3 = (current.getTime() - captured.getTime()) / (1000*60*24); //시간
-                                Long diff4 = (current.getTime() - captured.getTime()) / (3600000 * 24); //일
+                                Long diff3 = (current.getTime() - captured.getTime()) / (1000*60*60); //시간
+                                Long diff4 = (current.getTime() - captured.getTime()) / (1000*60*60*24); //일
                                 Log.d("TIME DIFF: ", String.valueOf(diff));
 
                                 if(diff < 60){

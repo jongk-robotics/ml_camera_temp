@@ -1,6 +1,7 @@
 package org.tensorflow.lite.examples.detection;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -38,6 +39,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,34 +75,32 @@ public class diary extends AppCompatActivity {
         ImageView imageView = (ImageView) findViewById(R.id.galley_picture);
         TextView Diary = findViewById(R.id.diary);
 //        TextView textView = findViewById(R.id.diary_text);
-        Bundle extras = getIntent().getExtras();
-        String urL = getIntent().getStringExtra("Url");
-        String diary = getIntent().getStringExtra("Memo");
-        String LocationName = getIntent().getStringExtra("LocationName");
-        String Friends = getIntent().getStringExtra("Friends");
-        String time = getIntent().getStringExtra("Time");
-        Glide.with(this).load(urL).into(imageView);
+        Photo photo = (Photo)getIntent().getSerializableExtra("photo");
+        Glide.with(this).load(photo.getUrl()).into(imageView);
         EditText editText = findViewById(R.id.diary_edit);
 //        TextView diaryText=findViewById(R.id.diary_text);
         final boolean[] edit = {false};
-        if(Friends != null) {
+        if(!photo.getFriends().isEmpty()) {
             //사람이 여러명일 경우, 자기 자신이 포함된 경우도 생각을 해줘야함!
-            Diary.setText(Friends + "와 " + LocationName + "에서 함께한 추억");
-            editText.setText(diary);
+            String temp = photo.getFriends().toString();
+            String friend = temp.substring(1, temp.length() - 1);
+            Diary.setText(friend + "와 " + photo.getLocationName() + "에서 함께한 추억");
+            editText.setText(photo.getMemo());
         }
         else{
-            Diary.setText(time+"의 "+LocationName + "에서의 추억");
+            SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy년 MM월 dd일");
+            String time = timeFormat.format(photo.getTimeStamp().toDate());
+            Diary.setText(time+"의 "+photo.getLocationName() + "에서의 추억");
+            editText.setText(photo.getMemo());
 //            textView.setText(diary);
             addbtn.setVisibility(VISIBLE);
             addbtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     //커뮤니티에 업로드
-                    uploadData(urL, true);
+                    uploadData(photo.getUrl(), true);
                     addbtn.setBackgroundColor(Color.GRAY);
                     addbtn.setEnabled(false);
-
-
                 }
             });
 
@@ -126,6 +126,8 @@ public class diary extends AppCompatActivity {
 //                    editText.setVisibility(View.INVISIBLE);
 //                    diaryText.setVisibility(VISIBLE);
 //                    diaryText.setText(temp);
+                    uploadMessage(temp, photo.getUrl());
+
 
                 }
             }
@@ -177,11 +179,54 @@ public class diary extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent  intent = new Intent(this, Tab_Activity.class);
+        startActivity(intent);
+    }
+
     private void setUseableEditText(EditText et, boolean useable) {
         et.setClickable(useable);
         et.setEnabled(useable);
         et.setFocusable(useable);
         et.setFocusableInTouchMode(useable);
+    }
+
+    void uploadMessage(String message, String url)
+    {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("memo", message);
+
+        final CollectionReference colRef = mFireStoreRef.collection("Images");
+
+        mFireStoreRef.collection("Images")
+                .whereEqualTo("url", url)
+                .get()
+                .continueWith(new Continuation<QuerySnapshot, Void>() {
+                    @Override
+                    public Void then(@NonNull Task<QuerySnapshot> task) throws Exception {
+                        for (DocumentSnapshot snap : task.getResult()) {
+                            snap.getReference()
+                                    .update(data)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("Success", "DocumentSnapshot successfully updated!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w("Failure", "Error updating document", e);
+                                        }
+                                    });
+
+                        }
+
+                        return null;
+                    }
+                });
     }
 
     void uploadData(String url, Boolean tf)

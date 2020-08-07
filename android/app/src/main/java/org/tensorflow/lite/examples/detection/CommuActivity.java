@@ -64,25 +64,25 @@ public class CommuActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         mgridView = (GridView) findViewById(R.id.community_grid_view);
         ImageView profile_image = findViewById(R.id.profile_image);
-        ImageAdapter = new Image_Adapter(this);
+        ImageAdapter = new Image_Adapter(this, user.getEmail());
 
         Intent intent = getIntent();
         ArrayList<Photo> photoList = (ArrayList<Photo>) intent.getSerializableExtra("photoList");
 
         ArrayList<Photo> liked = new ArrayList<>();
 
-        if(!photoList.isEmpty())
-        {
-            for(Photo photo : photoList)
-            {
-                if(photoList.contains(user.getEmail()))
-                {
-                    liked.add(photo);
-                }
-            }
-        }
+//        if(!photoList.isEmpty())
+//        {
+//            for(Photo photo : photoList)
+//            {
+//                if(photoList.contains(user.getEmail()))
+//                {
+//                    liked.add(photo);
+//                }
+//            }
+//        }
 
-        ImageAdapter.setPhotos(liked);
+        ImageAdapter.setPhotos(photoList);
         mgridView.setAdapter(ImageAdapter);
 
         ImageButton button = findViewById(R.id.back);
@@ -102,26 +102,22 @@ public class CommuActivity extends AppCompatActivity {
         Intent intent = getIntent();
         ArrayList<Photo> photoList = (ArrayList<Photo>) intent.getSerializableExtra("photoList");
 
-        ArrayList<Photo> liked = new ArrayList<>();
+//        ArrayList<Photo> liked = new ArrayList<>();
+//
+//        if(!photoList.isEmpty())
+//        {
+//            for(Photo photo : photoList)
+//            {
+//                Log.d("PHOHO", "emap: " + photo.getLikedPeople());
+//                if(photo.getLikedPeople().contains(user.getEmail()))
+//                {
+//                    Log.d("PHOHO", "photo: " + photo.getUrl());
+//                    liked.add(photo);
+//                }
+//            }
+//        }
 
-        if(!photoList.isEmpty())
-        {
-            for(Photo photo : photoList)
-            {
-                Log.d("PHOHO", "emap: " + photo.getLikedPeople());
-                if(photo.getLikedPeople().contains(user.getEmail()))
-                {
-                    Log.d("PHOHO", "photo: " + photo.getUrl());
-                    liked.add(photo);
-                }
-            }
-        }
-
-        for(Photo photo1: photoList){
-            Log.d("KDKDKD", photo1.getLikedPeople().toString() + ", " + photo1.getUrl());
-        }
-
-        ImageAdapter.setPhotos(liked);
+        ImageAdapter.setPhotos(photoList);
         mgridView.setAdapter(ImageAdapter);
         ImageAdapter.notifyDataSetChanged();
     }

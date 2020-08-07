@@ -624,7 +624,7 @@ public class CapturedImageAcvtivity extends AppCompatActivity
         final Photo photo = new Photo();
         photo.setUserEmail(userEmail);
         photo.setFriends(detectedNames);
-        photo.setShared(true);
+        photo.setShared(false);
         photo.setPeople(isPeople);
         photo.setLocation(location);
         photo.setLocationName(mCurrentLocationNames.get(0));

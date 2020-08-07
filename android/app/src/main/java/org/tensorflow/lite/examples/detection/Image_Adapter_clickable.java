@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -55,16 +57,9 @@ public class Image_Adapter_clickable extends BaseAdapter {
     }
     public final void callImageViewer(int selectedIndex){
         Intent i = new Intent(mContext, diary.class);
-
-        Timestamp timestamp = photos.get(selectedIndex).getTimeStamp();
-        SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
-        String date = s.format(timestamp.toDate());
-
-        i.putExtra("Url", photos.get(selectedIndex).getUrl());
-        i.putExtra("Memo", photos.get(selectedIndex).getMemo());
-        i.putExtra("LocationName", photos.get(selectedIndex).getLocationName());
-        i.putExtra("Friends", photos.get(selectedIndex).getFriends());
-        i.putExtra("Time", date);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("photo", photos.get(selectedIndex));
+        i.putExtras(bundle);
 
         mContext.startActivity(i);
 
@@ -74,6 +69,7 @@ public class Image_Adapter_clickable extends BaseAdapter {
         ImageView imageView ;
         imageView = new ImageView(mContext);
         Glide.with(mContext).load(photos.get(position).getUrl()).into(imageView);
+        Log.d("ADAPTER", "size: " + photos.size());
 
         return imageView;
     }

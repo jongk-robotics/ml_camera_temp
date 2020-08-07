@@ -1,12 +1,6 @@
 package org.tensorflow.lite.examples.detection;
 
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.ViewPager;
-
 import android.Manifest;
 import android.app.TabActivity;
 import android.content.Intent;
@@ -16,15 +10,14 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.material.tabs.TabItem;
-import com.google.android.material.tabs.TabLayout;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 public class Tab_Activity extends TabActivity {
 
@@ -55,7 +48,7 @@ public class Tab_Activity extends TabActivity {
             // 권한 요청
             ActivityCompat.requestPermissions(this, temp.trim().split(" "),1);
         }else { // 모두 허용 상태
-            Toast.makeText(this, "권한을 모두 허용", Toast.LENGTH_SHORT).show(); } }
+             } }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,41 +81,41 @@ public class Tab_Activity extends TabActivity {
 
 
 
+
+
+//        ImageView tab1 = new ImageView(this);
+//        ImageView tab2 = new ImageView(this);
+//        ImageView tab3 = new ImageView(this);
+//        tab1.setImageResource(R.drawable.slide1);
+//        tab2.setImageResource(R.drawable.slide2);
+//        tab3.setImageResource(R.drawable.slide3);
+
+//        TextView tv1 = (TextView) tabHost.getTabWidget().getChildAt(0);
+//        tv1.setTextColor(getResources().getColor(R.color.true_white));
+//        TextView tv2 = (TextView) tabHost.getTabWidget().getChildAt(1);
+//        tv2.setTextColor(getResources().getColor(R.color.true_white));
+//        TextView tv3 = (TextView) tabHost.getTabWidget().getChildAt(2);
+//        tv3.setTextColor(getResources().getColor(R.color.true_white));
+//        tv1.setText("RECORD");
+//        tv2.setText("FRIENDS");
+//        tv3.setText("SHARE");
+
         intent = new Intent(this, tab1.class);
 
-
-
-
-        ImageView tab1 = new ImageView(this);
-        ImageView tab2 = new ImageView(this);
-        ImageView tab3 = new ImageView(this);
-        tab1.setImageResource(R.drawable.slide1);
-        tab2.setImageResource(R.drawable.slide2);
-        tab3.setImageResource(R.drawable.slide3);
-//        TextView tv = (TextView) tabHost.getTabWidget().getChildAt(0);
-//        tv.setTextColor(getResources().getColor(R.color.true_white));
-//        TextView tv1 = (TextView) tabHost.getTabWidget().getChildAt(1);
-//        tv.setTextColor(getResources().getColor(R.color.true_white));
-//        TextView tv2 = (TextView) tabHost.getTabWidget().getChildAt(2);
-//        tv.setTextColor(getResources().getColor(R.color.true_white));
-//        tab1.setText("RECORD");
-//        tab2.setText("NETWORK");
-//        tab3.setText("PUBLIC");
-
-        spec = tabHost.newTabSpec("artists").setIndicator(tab1)
+        spec = tabHost.newTabSpec("artists").setIndicator("RECORD")
                 .setContent(intent);
         tabHost.addTab(spec);
 
         intent = new Intent(this, tab2.class);
 
 
-            spec = tabHost.newTabSpec("albums").setIndicator("tab2")
+            spec = tabHost.newTabSpec("albums").setIndicator("FRIENDS")
                     .setContent(intent);
             tabHost.addTab(spec);
 
         intent = new Intent(this, tab3.class);
 
-        spec = tabHost.newTabSpec("songs").setIndicator("tab3")
+        spec = tabHost.newTabSpec("songs").setIndicator("SHARE")
                 .setContent(intent);
         tabHost.addTab(spec);
 
